@@ -1,0 +1,12 @@
+[
+  {"id":"F01","name":"単一要素","labels":["A"],"rows":[[0]],"expected":{"minFeedback":0,"sccs":[[0]],"bands":[0]}},
+  {"id":"F02","name":"関係なし","labels":["A","B","C","D"],"rows":[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]],"expected":{"minFeedback":0,"sccs":[[0],[1],[2],[3]],"bands":[0,0,0,0]}},
+  {"id":"F03","name":"A→B→C","labels":["A","B","C"],"rows":[[0,0,0],[1,0,0],[0,1,0]],"expected":{"minFeedback":0,"order":[0,1,2],"sccs":[[0],[1],[2]],"bands":[0,1,2]}},
+  {"id":"F04","name":"3要素の循環","labels":["A","B","C"],"rows":[[0,0,1],[1,0,0],[0,1,0]],"expected":{"minFeedback":1,"sccs":[[0,1,2]],"bands":[0,0,0]}},
+  {"id":"F05","name":"二つの循環ブロック","labels":["A","B","C","D"],"rows":[[0,1,0,0],[1,0,0,0],[0,1,0,1],[0,0,1,0]],"expected":{"minFeedback":2,"order":[0,1,2,3],"sccs":[[0,1],[2,3]],"bands":[0,0,1,1]}},
+  {"id":"F06","name":"重み付きDAGと孤立要素","labels":["A","B","C","D"],"rows":[[0,0,0,0],[2,0,0,0],[4,3,0,0],[0,0,0,0]],"expected":{"minFeedback":0,"order":[0,1,2,3],"sccs":[[0],[1],[2],[3]],"bands":[0,1,2,0]}},
+  {"id":"F07","name":"対称な二つのモジュール","labels":["A","B","C","D"],"rows":[[0,1,0,0],[1,0,0,0],[0,0,0,1],[0,0,1,0]],"expected":{"minFeedback":2,"sccs":[[0,1],[2,3]],"bands":[0,0,0,0],"membership":[0,0,1,1],"coordinationCost":4}},
+  {"id":"F08","name":"非対称の依存","labels":["A","B"],"rows":[[0,0],[2,0]],"expected":{"minFeedback":0,"order":[0,1],"sccs":[[0],[1]],"bands":[0,1]}},
+  {"id":"F09","name":"重みの異なる相互依存","labels":["A","B"],"rows":[[0,5],[2,0]],"expected":{"minFeedback":2,"order":[1,0],"sccs":[[0,1]],"bands":[0,0]}},
+  {"id":"F10","name":"全ペア同重み","labels":["A","B","C","D"],"rows":[[0,1,1,1],[1,0,1,1],[1,1,0,1],[1,1,1,0]],"expected":{"minFeedback":6,"sccs":[[0,1,2,3]],"bands":[0,0,0,0]}}
+]
