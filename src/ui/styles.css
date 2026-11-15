@@ -27,3 +27,38 @@ dd { font-size: 30px; margin: 6px 0 0; font-variant-numeric: tabular-nums; }
 footer { padding: 24px 0 36px; color: #617166; font-size: 12px; line-height: 1.8; }
 a:focus-visible { outline: 3px solid #276d52; outline-offset: 5px; }
 @media (max-width: 700px) { main { padding: 0 20px; } .panels { grid-template-columns: 1fr; } .intro { padding-top: 36px; } .panel { padding: 22px; } }
+.intro { padding-top: 32px; }
+h1 { font-size: clamp(28px, 4vw, 44px); line-height: 1.4; }
+.panel { margin-bottom: 22px; }
+.controls, .actions { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin: 16px 0; }
+label { font-size: 13px; display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+input, select, button { font: inherit; max-width: 100%; }
+input:not([type=checkbox]):not([type=radio]):not([type=range]), select { border: 1px solid #acbdb0; border-radius: 6px; padding: 8px; background: #fff; color: #17352e; }
+input[type=number] { width: 100px; }
+button { border: 1px solid #9bb19f; background: #f2f5ed; padding: 9px 13px; border-radius: 7px; color: #17352e; cursor: pointer; }
+button.primary { background: #255a45; color: white; }
+button:disabled { opacity: .5; cursor: default; }
+:focus-visible { outline: 3px solid #b46925; outline-offset: 3px; }
+summary { cursor: pointer; font-size: 14px; }
+.table-scroll { max-height: 320px; overflow: auto; }
+table { border-collapse: collapse; font-size: 13px; }
+th, td { border: 1px solid #ccd6c9; padding: 8px; text-align: left; white-space: pre-wrap; overflow-wrap: anywhere; min-width: 45px; }
+th { background: #edf2e9; }
+.hash { overflow-wrap: anywhere; font-size: 11px; }
+.warning { color: #775020; }
+[role=alert] { color: #9c3333; font-size: 13px; }
+[role=alert] li { margin: 10px 0; overflow-wrap: anywhere; }
+.matrix-layout { display: grid; grid-template-columns: minmax(0, 620px) minmax(180px, 1fr); gap: 20px; }
+canvas { display: block; border: 1px solid #c9d4c5; }
+.cell-detail { background: #edf2e9; border-radius: 8px; padding: 16px; overflow-wrap: anywhere; }
+h3 { font-size: 15px; }
+.search-results { max-height: 160px; overflow: auto; font-size: 13px; }
+.search-results button { margin: 4px; }
+.mode-panel { margin-top: 22px; }
+@media (max-width: 850px) { .matrix-layout { grid-template-columns: 1fr; } }
+.canvas-wrap { position: relative; width: 100%; max-width: 620px; aspect-ratio: 1; }
+.row-headers, .col-headers { pointer-events: none; position: absolute; inset: 0; overflow: hidden; font-size: 11px; }
+.row-headers { z-index: 1; clip-path: inset(16.13% 83.87% 0 0); }
+.row-headers span { position: absolute; left: 3px; max-width: 15%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.col-headers { z-index: 1; clip-path: inset(0 0 83.87% 16.13%); }
+.col-headers span { position: absolute; top: 15%; max-width: 15%; transform: rotate(-90deg); transform-origin: top left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

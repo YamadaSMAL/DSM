@@ -3,7 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "engines": { "node": ">=26.0.0 <27" },
+  "engines": {
+    "node": ">=26.0.0 <27"
+  },
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "typecheck": "tsc --noEmit",
@@ -11,11 +13,20 @@
     "test:watch": "vitest",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "check": "npm run typecheck && npm test && npm run build"
+    "check": "npm run typecheck && npm test && npm run build",
+    "test:e2e": "playwright test"
   },
-  "dependencies": { "react": "19.3.1", "react-dom": "19.3.1" },
+  "dependencies": {
+    "fflate": "0.8.3",
+    "papaparse": "5.5.3",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+  },
   "devDependencies": {
+    "@playwright/test": "1.56.1",
     "@types/node": "26.6.6",
+    "@types/papaparse": "5.3.16",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "6.3.0",
