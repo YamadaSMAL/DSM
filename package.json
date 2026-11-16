@@ -1,7 +1,7 @@
 {
   "name": "dsm-analysis",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "engines": {
     "node": ">=26.0.0 <27"
@@ -14,7 +14,8 @@
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1",
     "check": "npm run typecheck && npm test && npm run build",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:subpath": "playwright test --config playwright.subpath.config.ts"
   },
   "dependencies": {
     "fflate": "0.8.3",

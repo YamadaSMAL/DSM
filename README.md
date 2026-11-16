@@ -1,6 +1,6 @@
 # DSM解析Webアプリ
 
-[実装仕様書](SPECIFICATION.md)を正本とするブラウザ完結型アプリ。M0の計算基盤、M1の取込・検証・可視化、M2の最小解析・比較・手動順序ビューを実装済み。
+[実装仕様書](SPECIFICATION.md)を正本とするブラウザ完結型アプリ。M0の計算基盤、M1の取込・検証・可視化、M2の最小解析・比較・手動順序ビュー、M3の出力・セッション復元を実装済み（v0.1.0）。
 
 ## 起動と検証
 
@@ -18,7 +18,8 @@ npm run dev
 ```sh
 npm run check       # 型検査・単体/性質テスト・本番ビルド
 npx playwright install chromium
-npm run test:e2e    # 本番ビルドでブラウザ操作と性能測定
+npm run test:e2e    # 本番ビルド・出力・オフラインHTMLを検証
+npm run test:subpath # /test-repo/でWorker・保存再読込を検証
 ```
 
 検証環境のBraveを使う場合:
@@ -27,7 +28,7 @@ npm run test:e2e    # 本番ビルドでブラウザ操作と性能測定
 DSM_BROWSER_EXECUTABLE='/Applications/Brave Browser.app/Contents/MacOS/Brave Browser' npm run test:e2e
 ```
 
-`npm run preview`で `dist/` を配信できる。GitHub Pagesの公開はM3。サブパスは `DSM_BASE_PATH=/repository-name/ npm run build` で指定する。通常アプリはHTTP(S)で開き、distの直接ダブルクリックには対応しない。
+`npm run preview`で `dist/` を配信できる。GitHub Pagesのworkflowは準備済み。公開先は未設定で外部公開は未実施。サブパスは `DSM_BASE_PATH=/repository-name/ npm run build` で指定する。通常アプリはHTTP(S)で開き、distの直接ダブルクリックには対応しない。
 
 ## 現在の実装範囲
 
@@ -41,33 +42,36 @@ DSM_BROWSER_EXECUTABLE='/Applications/Brave Browser.app/Contents/MacOS/Brave Bro
 - **M2実行・比較**: 計算Worker、コピー転送、協調取消と1秒フォールバック、30秒上限、版・条件・ハッシュ付きの完了結果、条件変更後の旧結果区別、共通色スケールの左右Canvas。
 - **M2ビュー**: 構造クラスタ／SCCを線と番号・所属表で表示。ドラッグ／上下矢印による同時並べ替え、元順／解析順へ復帰、undo/redo（100変更）。ビューごとの工程指標と順序保証の検査。元解析は上書きしない。
 
+- **M3出力**: 単独HTML（file://でオフライン検索・ズーム・パン・詳細、印刷画像）、XLSXの9シート、セッションJSON。出力開始時の選択結果・現在ビューを固定し、Workerで整合性・指標を再検証する。
+- **M3復元・配信**: JSONの型・寸法・元セル・ハッシュ・結果・ビューを検証し、プレビュー確定で復元。CIとPages用workflow、/test-repo/配下のE2Eを追加。公開は有効化設定を行うまで実行しない。
+
 内部は「行が列に依存」、グラフは列→行。逆規約の入力は転置して記録する。元セル表・元A・解析用行列を分け、既存domain関数を共用して元データを変更しない。構造／工程のモードは同じ優先度。IGTA++はM5で原典照合後に追加する。
 
 ## 対応上限と制限
 
-ファイル20MiB、要素数1〜500、ラベル200文字。CSV/TSVと `.xlsx` のみ対応し、`.xls`・`.xlsm`・暗号化ブックは非対応。XLSXの結合・日付・真偽値・エラーセルは拒否。非表示内容も選択範囲なら含む。数式は再計算せず、保存済み計算値は古い可能性がある。
+ファイル20MiB、要素数1〜500、ラベル200文字。CSV/TSVと `.xlsx` のほか、64MiBまでのセッションJSONを再読込できる。`.xls`・`.xlsm`・暗号化ブックは非対応。XLSXの結合・日付・真偽値・エラーセルは拒否。非表示内容も選択範囲なら含む。数式は再計算せず、保存済み計算値は古い可能性がある。
 
 XLSXは実展開量100MiB・10,000エントリで中断する。SheetJSへは展開後の無圧縮ZIPを渡す。選択範囲はヘッダー込み501×501まで。巨大な申告範囲は範囲指定で絞る必要がある。展開上限は総メモリ上限ではなく、ブック全体のXML解釈と一時コピーの追加メモリを要する。
 
-ブラウザ操作はBrave（Chromium）で検証。Chrome／Edge／Firefox／Safariの個別互換性、30fpsの継続パン、最大メモリは未検証。XLSX出力はヘッダー・型・列幅の技術検証のみで、利用者向け出力機能はM3。手動並べ替え・undo/redoは実装済み。階層法は最悪O(n³)で大域最適を保証せず、工程のSCC内は元index順のため循環とフィードバックが残る。Bandは同時実行の保証ではない。
+ブラウザ操作はBrave（Chromium）で検証。Chrome／Edge／Firefox／Safariの個別互換性、30fpsの継続パン、最大メモリは未検証。XLSX出力は型・列幅を保持し、式とリンクを生成しない。手動並べ替え・undo/redoは実装済み。階層法は最悪O(n³)で大域最適を保証せず、工程のSCC内は元index順のため循環とフィードバックが残る。Bandは同時実行の保証ではない。
 
 ## 主なファイル
 
 | 場所 | 内容 |
 | --- | --- |
 | `src/domain/` | UIに依存しないモデル・前処理・計算・ハッシュ |
-| `src/io/` | CSV/XLSXの原セル取得・検証・来歴 |
+| `src/io/` | CSV/XLSX取込、セッション検証、HTML/XLSX/JSON出力 |
 | `src/algorithms/` | 固定registry、階層法、SCC・順序・Band、実行・条件比較 |
 | `src/state/` | 結果ごとの非破壊ビュー・undo/redo |
-| `src/workers/` | メッセージ契約、取込／解析Worker、取消・時間上限 |
+| `src/workers/` | メッセージ契約、取込／解析／入出力Worker、取消・時間上限 |
 | `src/ui/` | 入力／確定フロー、Canvas、検索・詳細 |
 | `tests/unit/`, `tests/property/` | 数値基盤・取込・Workerの検証 |
 | `tests/e2e/` | 本番ブラウザ操作と100/200/500要素ベンチマーク |
 | `docs/decisions.md` | 判断・理由・次段階への契約 |
-| `docs/M0-validation.md`, `docs/M1-validation.md`, `docs/M2-validation.md` | 段階別検証記録 |
+| `docs/M0-validation.md`, `docs/M1-validation.md`, `docs/M2-validation.md`, `docs/M3-validation.md` | 段階別検証記録 |
 | `docs/benchmarks.md` | 基準環境、実測と未検証事項 |
 | `docs/dependencies.md` | 固定版、取得元、ライセンス |
 
-M2の詳細・性能値は [M2検証記録](docs/M2-validation.md) と [benchmarks](docs/benchmarks.md)。追加の外部依存はない。次はM3の出力・セッション保存・Pages配信確認。
+M2の詳細・性能値は [M2検証記録](docs/M2-validation.md) と [benchmarks](docs/benchmarks.md)。追加の外部依存はない。M3の使い方・保存・公開設定は [v0.1手順書](docs/v0.1-guide.md)、検証は [M3検証記録](docs/M3-validation.md)。次はM4の複数探索手法。
 
-入力情報はメモリのみで保持し、自動保存・外部送信しない。ページを再読込すると失われる。エクスポート・セッション保存はM3。
+入力情報はメモリのみで保持し、自動保存・外部送信しない。ページを再読込すると失われる。再開にはセッションJSONを保存し、入力ファイルから検証・再読込する。HTML/XLSXは閲覧・共有用。

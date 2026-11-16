@@ -1,0 +1,24 @@
+{
+  "n": 500,
+  "density": 1,
+  "repetitions": 1,
+  "browser": "157.0.8103.79",
+  "note": "密な有向500要素、SCC。UIの出力クリックから保存完了表示まで。検証・生成・転送・ダウンロードを含む。",
+  "measurements": [
+    {
+      "format": "html",
+      "elapsedMs": 407.63408400000026,
+      "bytes": 1087665
+    },
+    {
+      "format": "xlsx",
+      "elapsedMs": 951.2796250000001,
+      "bytes": 5874244
+    },
+    {
+      "format": "json",
+      "elapsedMs": 378.7204159999992,
+      "bytes": 19189685
+    }
+  ]
+}

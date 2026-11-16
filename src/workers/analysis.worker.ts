@@ -1,3 +1,4 @@
+import { artifactMetadata } from '../io/artifact';
 import { runAnalysis } from '../algorithms/registry';
 import type { Hierarchy } from '../algorithms/hierarchical';
 import type { AnalysisMessage, AnalysisResponse } from './analysisProtocol';
@@ -18,6 +19,7 @@ scope.onmessage = async ({ data }) => {
         if (now - lastProgress >= 200) { scope.postMessage({ runId, dataRevision, status: 'progress', progress: { ...progress, elapsedMs: now - start } }); lastProgress = now; }
       },
     }, cache);
+    result.environment=artifactMetadata();
     scope.postMessage({ runId, dataRevision, status: 'completed', result });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

@@ -14,6 +14,7 @@ export interface RunResult extends Solution {
   runId: string; inputHash: string; dataRevision: number; mode: AnalysisMode;
   algorithm: { id: string; version: string }; parameters: Parameters;
   preprocessing: Transformation[]; options: { threshold: number; binary: boolean };
+  environment?: {createdAt:string;timeZone:string;appVersion:string;appCommit:string;userAgent:string};
   status: 'completed'; stopReason: string; metrics: Record<string, number | null>; metricVersions: Record<string, string>;
   elapsedMs: number; warnings: string[];
 }

@@ -9,19 +9,23 @@ import { AnalysisClient, AnalysisStopped } from '../workers/analysisClient';
 import type { AnalysisResponse } from '../workers/analysisProtocol';
 import { MatrixCanvas } from './MatrixCanvas';
 import { OrderEditor } from './OrderEditor';
+import { ExportPanel } from './ExportPanel';
+import { artifactMetadata } from '../io/artifact';
+import type { SessionData } from '../io/session';
+import type { SourceTable } from '../io/types';
 const metricLabels: Record<string, string> = {
   coordinationCost: '調整コスト', totalWeight: '総重み', internalWeight: '内部重み', externalWeight: '外部重み', externalRatio: '外部比', clusterCount: 'クラスタ数', minClusterSize: '最小規模', maxClusterSize: '最大規模', meanClusterSize: '平均規模', alpha: 'α',
   feedbackWeight: 'フィードバック重み', feedbackCount: 'フィードバック件数', feedbackRatio: 'フィードバック比', interSccFeedbackWeight: 'SCC間フィードバック重み', sccCount: 'SCC数', maxSccSize: '最大SCC規模', cyclicBlockCount: '循環ブロック数', bandCount: 'Band数',
 };
 function number(value: number | null | undefined) { return value === null || value === undefined ? '—（関係なし）' : value.toLocaleString('ja-JP', { maximumSignificantDigits: 8 }); }
-export function AnalysisWorkspace({ matrix }: { matrix: MatrixData | null }) {
-  const [mode, setMode] = useState<AnalysisMode>('structure');
-  const [algorithm, setAlgorithm] = useState('hierarchical-average-v1');
-  const [threshold, setThreshold] = useState('0'), [binary, setBinary] = useState(false);
-  const [k, setK] = useState(String(defaultK(matrix?.n ?? 1))), [alpha, setAlpha] = useState('1');
-  const [runs, setRuns] = useState<RunResult[]>([]), [selectedId, setSelectedId] = useState('');
-  const [views, setViews] = useState<Record<string, ViewHistory>>({});
-  const [colorOptions, setColorOptions] = useState({ log: false, alternative: false });
+export function AnalysisWorkspace({ matrix, source, restored }: { matrix: MatrixData | null; source?: SourceTable; restored?: SessionData | null }) {
+  const [mode, setMode] = useState<AnalysisMode>(restored?.runs.find(r=>r.runId===restored.selectedRunId)?.mode ?? (algorithms.find(a=>a.id===restored?.settings.algorithmId)?.mode ?? 'structure'));
+  const [algorithm, setAlgorithm] = useState(restored?.settings.algorithmId ?? 'hierarchical-average-v1');
+  const [threshold, setThreshold] = useState(String(restored?.settings.options.threshold ?? 0)), [binary, setBinary] = useState(restored?.settings.options.binary ?? false);
+  const [k, setK] = useState(String(restored?.settings.parameters.k ?? defaultK(matrix?.n ?? 1))), [alpha, setAlpha] = useState(String(restored?.settings.parameters.alpha ?? 1));
+  const [runs, setRuns] = useState<RunResult[]>(restored?.runs ?? []), [selectedId, setSelectedId] = useState(restored?.selectedRunId ?? '');
+  const [views, setViews] = useState<Record<string, ViewHistory>>(restored?.views ?? {});
+  const [colorOptions, setColorOptions] = useState(restored?.settings.color ?? { log: false, alternative: false });
   const [status, setStatus] = useState(''), [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState<Extract<AnalysisResponse, { status: 'progress' }>['progress'] | null>(null);
   const client = useRef<AnalysisClient | null>(null), generation = useRef(0);
@@ -44,6 +48,11 @@ export function AnalysisWorkspace({ matrix }: { matrix: MatrixData | null }) {
   const comparable = selected ? runs.filter(r => comparisonKey(r) === comparisonKey(selected)).sort(compareResults) : [];
   const changed = selected && (mode !== selected.mode || algorithm !== selected.algorithm.id || algorithm === 'hierarchical-average-v1' && Number(k) !== selected.parameters.k || Number(threshold) !== selected.options.threshold || binary !== selected.options.binary || selected.mode === 'structure' && Number(alpha) !== selected.parameters.alpha);
   const sharedMax = useMemo(() => matrix?.values.reduce((a,b) => Math.max(a,b), 0) ?? 0, [matrix]);
+  function capture(): SessionData | null {
+    if(!matrix || !source)return null;
+    const selectedRun=runs.find(r=>r.runId===selectedId);
+    return {schemaVersion:1,kind:'dsm-session',title:restored?.title ?? 'DSM解析レポート',metadata:restored?.metadata ?? artifactMetadata(),input:matrix,source,runs,views,selectedRunId:selectedId,settings:{algorithmId:selectedRun?.algorithm.id ?? algorithm,options:selectedRun?.options ?? {threshold:valid?Number(threshold):0,binary},parameters:selectedRun?.parameters ?? (mode==='structure'?{alpha:valid?Number(alpha):1,...(algorithm==='hierarchical-average-v1'?{k:valid?Number(k):defaultK(matrix.n)}:{})}:{}),color:colorOptions}};
+  }
   return <section className="analysis-workspace" aria-label="解析ワークスペース">
     <section className="panel"><h2>03 · 解析条件</h2><div className="controls">
       <label><input type="radio" name="mode" checked={mode === 'structure'} onChange={() => { setMode('structure'); setAlgorithm('hierarchical-average-v1'); }} />構造 · 部品・組織のまとまり</label>
@@ -81,5 +90,6 @@ export function AnalysisWorkspace({ matrix }: { matrix: MatrixData | null }) {
       <MatrixCanvas key={selected.runId} matrix={matrix} order={history.order} options={selected.options} title="結果DSM · 現在のビュー" initialAnalysis analysisKind={selected.mode === 'structure' ? 'symmetric' : 'directed'} sharedMax={sharedMax} colorOptions={colorOptions} onColorChange={setColorOptions} {...(selected.membership ? { membership: selected.membership, membershipKind: '構造クラスタ' as const } : selected.scc ? { membership: selected.scc.membership, membershipKind: 'SCC' as const, ...(viewMetrics?.orderGuaranteed ? { bands: selected.scc.bandByElement } : {}) } : {})} /></div>
       <section className="panel table-scroll"><table aria-label="所属と表示順位"><caption>所属は元indexで保持し、表示順とは区別します。</caption><thead><tr><th>ID / ラベル</th><th>元順位</th><th>表示順位</th><th>{selected.mode === 'structure' ? '構造クラスタ' : 'SCC'}</th>{selected.scc && <th>Band{!viewMetrics?.orderGuaranteed && '（元解析・現在ビューに非適用）'}</th>}</tr></thead><tbody>{matrix.elements.map(e => <tr key={e.id}><th>{e.id} / {e.label}</th><td>{e.originalIndex + 1}</td><td>{history.order.indexOf(e.originalIndex) + 1}</td><td>{(selected.membership ?? selected.scc!.membership)[e.originalIndex]! + 1}</td>{selected.scc && <td>{selected.scc.bandByElement[e.originalIndex]}</td>}</tr>)}</tbody></table></section>
     </>}
+    {matrix && <ExportPanel capture={capture} />}
   </section>;
 }

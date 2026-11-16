@@ -1,0 +1,43 @@
+import {test,expect,type Page} from '@playwright/test';
+import fs from 'node:fs';
+import path from 'node:path';
+import {pathToFileURL} from 'node:url';
+import Papa from 'papaparse';
+import {read} from 'xlsx';
+async function start(page:Page,text=',C,B,A\nC,0,1,0\nB,0,0,1\nA,0,0,0'){
+  await page.goto('/');await page.getByLabel('入力ファイル',{exact:true}).setInputFiles({name:'入力.csv',mimeType:'text/csv',buffer:Buffer.from(text)});await page.getByRole('button',{name:'検証してプレビュー',exact:true}).click();await page.getByRole('button',{name:'このデータを確定',exact:true}).click();
+  await page.getByLabel('工程 · タスクの依存と順序',{exact:true}).check();await page.getByRole('button',{name:'解析を実行',exact:true}).click();await expect(page.getByTestId('analysis-status')).toContainText('completed');
+}
+async function download(page:Page,button:string,target:string){const waiting=page.waitForEvent('download');await page.getByRole('button',{name:button,exact:true}).click();const file=await waiting;fs.mkdirSync(path.dirname(target),{recursive:true});await file.saveAs(target);await expect(page.getByTestId('export-status')).toContainText('保存しました');return file.suggestedFilename();}
+test('HTMLをfile://でオフライン閲覧し、検索・ズーム・詳細・印刷画像と未信頼ラベルを確認する',async({page,context,browser})=>{
+  const label='</script><img src=x onerror=alert(1)>',csv=Papa.unparse([['',label,label,'=HYPERLINK("x")'],[label,0,0,0],[label,1,0,0],['=HYPERLINK("x")',0,1,0]]);const dialogs:string[]=[];page.on('dialog',dialog=>{dialogs.push(dialog.message());void dialog.dismiss();});await start(page,csv);await page.getByLabel('レポートタイトル',{exact:true}).fill(label);
+  const target=path.resolve('test-results/M3/offline.html');await download(page,'単独HTMLを書き出す',target);
+  const requests:string[]=[];page.on('request',request=>{if(/^https?:/.test(request.url()))requests.push(request.url());});await context.setOffline(true);await page.goto(pathToFileURL(target).href);
+  await expect(page.getByRole('heading',{level:1})).toHaveText(label);expect(await page.locator('img[src="x"]').count()).toBe(0);
+  await page.getByPlaceholder('ラベル / ID').fill('img');await expect(page.locator('#matches button')).toHaveCount(2);await page.getByRole('button',{name:label+' · e000002',exact:true}).click();await expect(page.locator('#result-detail')).toContainText('e000002');
+  await page.getByLabel('ズーム',{exact:true}).fill('3');await expect(page.locator('#zoom-value')).toHaveText('3倍');await page.getByRole('grid',{name:'結果DSM',exact:true}).focus();await page.keyboard.press('ArrowRight');await expect(page.locator('#result-detail')).toContainText('e000003');
+  const canvas=page.getByRole('grid',{name:'結果DSM',exact:true}),box=await canvas.boundingBox();await page.mouse.move(box!.x+200,box!.y+200);await page.mouse.down();await page.mouse.move(box!.x+150,box!.y+150,{steps:4});await page.mouse.up();
+  await expect(page.locator('#original-print')).toHaveAttribute('src',/^data:image\/png/);await page.emulateMedia({media:'print'});await expect(page.locator('#result-print')).toBeVisible();await page.emulateMedia({media:'screen'});await page.screenshot({path:'test-results/M3-offline.png',fullPage:true});expect(requests).toEqual([]);expect(dialogs).toEqual([]);
+  const noScript=await browser.newContext({javaScriptEnabled:false,offline:true});const staticPage=await noScript.newPage();await staticPage.goto(pathToFileURL(target).href);await expect(staticPage.getByRole('heading',{name:'所属・並び順',exact:true})).toBeVisible();await expect(staticPage.getByRole('heading',{name:'入力・実行条件',exact:true})).toBeVisible();await expect(staticPage.locator('#original-print')).not.toHaveAttribute('src',/^data:/);await expect(staticPage.getByText('e000003 / =HYPERLINK("x")',{exact:true})).toBeVisible();await noScript.close();
+});
+test('JSON保存→検証プレビュー→復元→同条件再実行で指標・手動履歴を維持する',async({page})=>{
+  await start(page);await page.getByText('表示順を手動で変更（行・列を同時に移動）',{exact:true}).click();await page.getByRole('button',{name:'順序 A e000003',exact:true}).press('ArrowDown');await page.getByRole('button',{name:'順序 C e000001',exact:true}).press('ArrowUp');await page.getByRole('button',{name:'undo',exact:true}).click();await expect(page.getByTestId('view-order')).toContainText('B → A → C');
+  await page.getByLabel('レポートタイトル',{exact:true}).fill('再現テスト');
+  const target=path.resolve('test-results/M3/session.json');await download(page,'セッションJSONを保存',target);const saved=JSON.parse(fs.readFileSync(target,'utf8'));expect(saved.runs[0].environment.appVersion).toBe('0.1.0');expect(saved.views[saved.selectedRunId].future.length).toBe(1);
+  await page.reload();await page.getByLabel('入力ファイル',{exact:true}).setInputFiles(target);await page.getByRole('button',{name:'検証してプレビュー',exact:true}).click();await expect(page.getByText('セッション: 1結果とビューを検証しました。',{exact:false})).toBeVisible();await expect(page.getByRole('table',{name:'解析結果一覧'})).toHaveCount(0);await page.getByRole('button',{name:'このデータを確定',exact:true}).click();await expect(page.getByTestId('view-order')).toContainText('B → A → C');await expect(page.getByLabel('レポートタイトル',{exact:true})).toHaveValue('再現テスト');
+  await page.getByText('表示順を手動で変更（行・列を同時に移動）',{exact:true}).click();await expect(page.getByRole('button',{name:'redo',exact:true})).toBeEnabled();await page.getByRole('button',{name:'redo',exact:true}).click();await expect(page.getByTestId('view-order')).toContainText('B → C → A');await page.getByRole('button',{name:'解析を実行',exact:true}).click();await expect(page.getByTestId('analysis-status')).toContainText('completed');await expect(page.getByLabel('解析結果の指標').locator('[data-metric=feedbackWeight] strong')).toHaveText('0');
+  saved.runs[0].order=[0,0,2];await page.getByLabel('入力ファイル',{exact:true}).setInputFiles({name:'bad.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(saved))});await page.getByRole('button',{name:'検証してプレビュー',exact:true}).click();await expect(page.getByText('並び順は0〜n−1',{exact:false})).toBeVisible();await expect(page.getByRole('table',{name:'解析結果一覧'}).locator('tbody tr')).toHaveCount(2);
+});
+test('出力中の選択変更が固定スナップショットのXLSXへ混ざらない',async({page})=>{
+  await start(page);await page.getByLabel('解析手法',{exact:true}).selectOption('baseline-identity-v1');await page.getByRole('button',{name:'解析を実行',exact:true}).click();await expect(page.getByTestId('analysis-status')).toContainText('completed');await page.getByLabel('結果1を選択',{exact:true}).check();
+  await page.evaluate(()=>{const original=Worker.prototype.postMessage;Worker.prototype.postMessage=function(message:unknown,options?:Transferable[]|StructuredSerializeOptions){const send=()=>original.call(this,message,Array.isArray(options)?{transfer:options}:options);if((message as {type?:string}).type==='export')setTimeout(send,200);else send();};});
+  const waiting=page.waitForEvent('download');await page.getByRole('button',{name:'XLSXを書き出す',exact:true}).click();await page.getByLabel('結果2を選択',{exact:true}).check();const file=await waiting,target=path.resolve('test-results/M3/snapshot.xlsx');await file.saveAs(target);const book=read(fs.readFileSync(target),{type:'buffer'});
+  const config=Object.values(book.Sheets['RunConfig']!).map(cell=>cell?.v);expect(config).toContain(JSON.stringify({id:'scc-tarjan-kahn-v1',version:'1.0.0'}));expect(book.Sheets['Metrics']!['D3']!.v).toBe(0);await expect(page.getByLabel('解析結果の指標').locator('[data-metric=feedbackWeight] strong')).toHaveText('2');
+});
+test('500要素のHTML/XLSX/JSONを出力し、巨大DOMを作らずオフライン表示する',async({page,context,browser})=>{
+  test.setTimeout(120_000);const n=500,text=','+Array.from({length:n},(_,i)=>`要素${i}`).join(',')+'\n'+Array.from({length:n},(_,r)=>`要素${r},`+Array.from({length:n},(_,c)=>r!==c?'1':'0').join(',')).join('\n');await start(page,text);
+  const measurements=[];
+  for(const [format,button]of [['html','単独HTMLを書き出す'],['xlsx','XLSXを書き出す'],['json','セッションJSONを保存']]as const){const start=performance.now(),target=path.resolve(`test-results/M3/500.${format}`);await download(page,button,target);measurements.push({format,elapsedMs:performance.now()-start,bytes:fs.statSync(target).size});}
+  fs.writeFileSync('test-results/M3-benchmarks.json',JSON.stringify({n,density:1,repetitions:1,browser:browser.version(),note:'密な有向500要素、SCC。UIの出力クリックから保存完了表示まで。検証・生成・転送・ダウンロードを含む。',measurements},null,2));
+  await context.setOffline(true);await page.goto(pathToFileURL(path.resolve('test-results/M3/500.html')).href);await expect(page.getByRole('grid')).toHaveCount(2);expect(await page.locator('td,th').count()).toBeLessThan(10000);await page.getByPlaceholder('ラベル / ID').fill('e000500');await page.getByRole('button',{name:'要素499 · e000500',exact:true}).click();await expect(page.locator('#result-detail')).toContainText('e000500');
+});
