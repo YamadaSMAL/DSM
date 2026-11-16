@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { MatrixData } from '../domain';
 import { defaultOptions, type ImportOptions, type ImportPreview } from '../io/types';
 import { ImportClient } from '../workers/client';
-import { MatrixCanvas } from './MatrixCanvas';
+import { AnalysisWorkspace } from './AnalysisWorkspace';
 const sample = ',A,B,C\nA,0,0,0\nB,1,0,0\nC,0,1,0\n';
 export function App() {
   const [options, setOptions] = useState<ImportOptions>({ ...defaultOptions });
@@ -15,7 +15,6 @@ export function App() {
   const client = useRef<ImportClient | null>(null);
   const generation = useRef(0);
   const revision = useRef(0);
-  const [mode, setMode] = useState('structure');
   useEffect(() => () => client.current?.cancel(), []);
   function invalidate() { generation.current++; client.current?.cancel(); setPreview(null); setBusy(false); setMessage(''); }
   function update<K extends keyof ImportOptions>(key: K, value: ImportOptions[K]) { invalidate(); setOptions(o => ({ ...o, [key]: value })); }
@@ -42,7 +41,7 @@ export function App() {
   const check = (key: 'labels' | 'symbols' | 'blanks' | 'diagonalBlanks' | 'cachedFormula' | 'reorderColumns', label: string) => <label><input type="checkbox" checked={options[key]} onChange={e => update(key, e.target.checked)} />{label}</label>;
   const matrix: MatrixData | null = active?.matrix ?? null;
   return <main>
-    <header><a className="brand" href="#main">DSM <span>解析</span></a><span className="badge">M1 · データ確認版</span></header>
+    <header><a className="brand" href="#main">DSM <span>解析</span></a><span className="badge">M2 · 最小解析版</span></header>
     <section id="main" className="intro"><p className="eyebrow">構造と工程を、同じ行列から。</p><h1>依存を読み込み、<br />つながりを確かめる。</h1><p>CSV / XLSXをブラウザ内で検証・表示します。入力データは送信せず、この画面のメモリで保持します。</p></section>
     <section className="panel" aria-labelledby="import-title" onDragOver={e => e.preventDefault()} onDrop={e => { e.preventDefault(); const next = e.dataTransfer.files[0]; if (next) choose(next); }}>
       <h2 id="import-title">01 · ファイルを確認</h2><p>ファイルをここへドロップ、または選択してください。上限20MiB・500要素。対応: CSV / TSV / .xlsx（.xls・.xlsm・暗号化ブックは非対応）</p>
@@ -67,8 +66,8 @@ export function App() {
       {preview.matrix && <><p>正規化後: {preview.matrix.n} × {preview.matrix.n} / 行が列に依存（列 → 行）</p><div className="table-scroll"><table aria-label="正規化プレビュー"><tbody>{preview.matrix.elements.slice(0, 8).map((e, i) => <tr key={e.id}><th>{e.label} / {e.id}</th>{Array.from({ length: Math.min(8, preview.matrix!.n) }, (_, j) => <td key={j}>{preview.matrix!.values[i * preview.matrix!.n + j]}</td>)}</tr>)}</tbody></table></div><h3>変換履歴</h3>{preview.matrix.provenance.transformations.length ? <ul>{preview.matrix.provenance.transformations.map((t, i) => <li key={i}>{t.kind}: {t.affectedCells}セル / {JSON.stringify(t.params)}</li>)}</ul> : <p>変換なし</p>}<p className="hash">原ファイル SHA-256: {preview.matrix.provenance.sourceSha256}<br />解析入力 SHA-256: {preview.inputHash}</p></>}
       <div className="actions"><button className="primary" disabled={!preview.matrix || preview.issueCount > 0} onClick={commit}>このデータを確定</button><button onClick={cancel}>プレビューを取消</button></div>
     </section>}
-    {matrix && <><p role="status">確定済み: {matrix.provenance.sourceName} / revision {matrix.revision} / {matrix.n}要素</p><MatrixCanvas key={matrix.revision} matrix={matrix} /></>}
-    <section className="panel mode-panel"><h2>解析モード</h2><div className="controls"><label><input type="radio" name="mode" checked={mode === 'structure'} onChange={() => setMode('structure')} />構造 · 部品・組織のまとまり</label><label><input type="radio" name="mode" checked={mode === 'process'} onChange={() => setMode('process')} />工程 · タスクの依存と順序</label></div><p>クラスタリング・SCCと順序付けはM2で追加します。</p><button disabled>解析を実行（M2）</button></section>
+    {matrix && <p role="status">確定済み: {matrix.provenance.sourceName} / revision {matrix.revision} / {matrix.n}要素</p>}
+    <AnalysisWorkspace key={matrix?.revision ?? 0} matrix={matrix} />
     <footer>読み方: BがAに依存するなら行B・列Aが1、グラフはA → B。原データを変更せず、解析用行列を別に作ります。</footer>
   </main>;
 }

@@ -62,3 +62,14 @@ h3 { font-size: 15px; }
 .row-headers span { position: absolute; left: 3px; max-width: 15%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .col-headers { z-index: 1; clip-path: inset(0 0 83.87% 16.13%); }
 .col-headers span { position: absolute; top: 15%; max-width: 15%; transform: rotate(-90deg); transform-origin: top left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.metric-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(130px,1fr)); gap: 16px; padding: 20px 0; }
+.metric-grid span { display: block; color: #53655d; font-size: 12px; }
+.metric-grid strong { font-size: 22px; display: block; margin-top: 6px; overflow-wrap: anywhere; }
+.comparison-canvases { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
+.comparison-canvases .matrix-layout { grid-template-columns: 1fr; }
+.comparison-canvases .panel { padding: 20px; }
+.order-editor { margin-top: 20px; }
+.order-list { max-height: 250px; overflow: auto; padding-left: 24px; }
+.order-list li { margin: 6px; }
+.order-list button { width: 100%; text-align: left; }
+@media (max-width: 950px) { .comparison-canvases { grid-template-columns: 1fr; } }

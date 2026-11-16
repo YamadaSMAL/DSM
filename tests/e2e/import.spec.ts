@@ -17,15 +17,15 @@ test('プレビュー確定・検索・ズーム・矢印詳細・取消・再�
   await page.getByRole('button', { name: 'サンプル A → B → C', exact: true }).click(); await inspect(page);
   await expect(page.getByRole('grid')).toHaveCount(0); await confirm(page);
   const grid = page.getByRole('grid'); await grid.focus(); await grid.press('ArrowDown');
-  await expect(page.locator('#cell-detail')).toContainText('B が A に依存。情報の方向: A → B');
+  await expect(page.getByTestId('cell-detail')).toContainText('B が A に依存。情報の方向: A → B');
   await grid.click({ position: { x: 360, y: 500 } });
-  await expect(page.locator('#cell-detail')).toContainText('C が B に依存。情報の方向: B → C');
+  await expect(page.getByTestId('cell-detail')).toContainText('C が B に依存。情報の方向: B → C');
   await page.getByPlaceholder('ラベル / ID').fill('e000003');
-  await page.getByRole('button', { name: 'C · e000003', exact: true }).click(); await expect(page.locator('#cell-detail')).toContainText('行: C');
+  await page.getByRole('button', { name: 'C · e000003', exact: true }).click(); await expect(page.getByTestId('cell-detail')).toContainText('行: C');
   await page.getByLabel('ズーム', { exact: true }).fill('3'); await expect(page.getByRole('status').filter({ hasText: '3.0倍' })).toBeVisible();
   const bounds = await grid.boundingBox();
   await page.mouse.move(bounds!.x + 400, bounds!.y + 400); await page.mouse.down(); await page.mouse.move(bounds!.x + 250, bounds!.y + 250, { steps: 5 }); await page.mouse.up();
-  await expect(page.locator('#cell-detail')).toContainText('行: C');
+  await expect(page.getByTestId('cell-detail')).toContainText('行: C');
   await page.getByRole('button', { name: '選択行の表形式表示', exact: true }).click(); await expect(page.getByRole('caption')).toHaveText('C の行');
   await page.getByRole('button', { name: '全体表示', exact: true }).click();
   await page.screenshot({ path: 'test-results/M1-desktop.png', fullPage: true });
@@ -50,7 +50,7 @@ test('XLSXのシート・範囲・数式拒否とキャッシュ、取消で有�
   await page.goto('/'); await page.getByLabel('入力ファイル', { exact: true }).setInputFiles({ name: 'fixture.xlsx', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', buffer: Buffer.from(write(book, { bookType: 'xlsx', type: 'buffer' }) as Buffer) });
   await page.getByLabel('シート名', { exact: true }).fill('日本語'); await page.getByLabel('A1範囲', { exact: true }).fill('A1:C3'); await inspect(page); await expect(page.getByRole('alert')).toContainText('B3');
   await page.getByText('値変換と詳細設定（既定では変換しません）', { exact: true }).click(); await page.getByLabel('保存済み計算値を利用（古い可能性・再計算なし）', { exact: true }).check(); await inspect(page); await confirm(page);
-  await page.getByRole('grid').focus(); await page.getByRole('grid').press('ArrowDown'); await expect(page.locator('#cell-detail')).toContainText('値: 2');
+  await page.getByRole('grid').focus(); await page.getByRole('grid').press('ArrowDown'); await expect(page.getByTestId('cell-detail')).toContainText('値: 2');
   // Real Worker cancellation while a new import is running.
   const size = 500; const text = Array.from({ length: size + 1 }, (_, r) => r === 0 ? ',' + Array.from({ length: size }, (_, i) => `E${i}`).join(',') : `E${r - 1},` + Array(size).fill('0').join(',')).join('\n');
   await upload(page, text, 'large.csv'); await page.getByRole('button', { name: '検証してプレビュー', exact: true }).click(); await page.getByRole('button', { name: '取込を取消', exact: true }).click();

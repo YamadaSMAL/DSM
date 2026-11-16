@@ -1,0 +1,296 @@
+{
+  "browser": "157.0.8103.79",
+  "seed": 20261116,
+  "repetitions": 3,
+  "note": "本番WorkerのrunAnalysis内部経過時間。前処理・ハッシュ・指標を含み、転送・描画は除外。キャッシュなし。",
+  "results": [
+    {
+      "n": 100,
+      "density": 0,
+      "algorithm": "hierarchical-average-v1",
+      "samplesMs": [
+        5,
+        4.9,
+        5.5
+      ],
+      "medianMs": 5,
+      "maxMs": 5.5
+    },
+    {
+      "n": 100,
+      "density": 0,
+      "algorithm": "scc-tarjan-kahn-v1",
+      "samplesMs": [
+        3.9,
+        4.1,
+        4.5
+      ],
+      "medianMs": 4.1,
+      "maxMs": 4.5
+    },
+    {
+      "n": 100,
+      "density": 0.01,
+      "algorithm": "hierarchical-average-v1",
+      "samplesMs": [
+        5.6,
+        5.7,
+        5.5
+      ],
+      "medianMs": 5.6,
+      "maxMs": 5.7
+    },
+    {
+      "n": 100,
+      "density": 0.01,
+      "algorithm": "scc-tarjan-kahn-v1",
+      "samplesMs": [
+        4.4,
+        4.1,
+        4.3
+      ],
+      "medianMs": 4.3,
+      "maxMs": 4.4
+    },
+    {
+      "n": 100,
+      "density": 0.1,
+      "algorithm": "hierarchical-average-v1",
+      "samplesMs": [
+        5.4,
+        5.6,
+        5.8
+      ],
+      "medianMs": 5.6,
+      "maxMs": 5.8
+    },
+    {
+      "n": 100,
+      "density": 0.1,
+      "algorithm": "scc-tarjan-kahn-v1",
+      "samplesMs": [
+        3.6,
+        3.9,
+        4.4
+      ],
+      "medianMs": 3.9,
+      "maxMs": 4.4
+    },
+    {
+      "n": 100,
+      "density": 1,
+      "algorithm": "hierarchical-average-v1",
+      "samplesMs": [
+        5.6,
+        5.2,
+        4.8
+      ],
+      "medianMs": 5.2,
+      "maxMs": 5.6
+    },
+    {
+      "n": 100,
+      "density": 1,
+      "algorithm": "scc-tarjan-kahn-v1",
+      "samplesMs": [
+        4.8,
+        4.5,
+        4.7
+      ],
+      "medianMs": 4.7,
+      "maxMs": 4.8
+    },
+    {
+      "n": 200,
+      "density": 0,
+      "algorithm": "hierarchical-average-v1",
+      "samplesMs": [
+        11.7,
+        12.3,
+        12.1
+      ],
+      "medianMs": 12.1,
+      "maxMs": 12.3
+    },
+    {
+      "n": 200,
+      "density": 0,
+      "algorithm": "scc-tarjan-kahn-v1",
+      "samplesMs": [
+        8.6,
+        8.5,
+        8
+      ],
+      "medianMs": 8.5,
+      "maxMs": 8.6
+    },
+    {
+      "n": 200,
+      "density": 0.01,
+      "algorithm": "hierarchical-average-v1",
+      "samplesMs": [
+        11.7,
+        12.4,
+        12.3
+      ],
+      "medianMs": 12.3,
+      "maxMs": 12.4
+    },
+    {
+      "n": 200,
+      "density": 0.01,
+      "algorithm": "scc-tarjan-kahn-v1",
+      "samplesMs": [
+        9.1,
+        9.2,
+        9.1
+      ],
+      "medianMs": 9.1,
+      "maxMs": 9.2
+    },
+    {
+      "n": 200,
+      "density": 0.1,
+      "algorithm": "hierarchical-average-v1",
+      "samplesMs": [
+        13.3,
+        12.5,
+        12.3
+      ],
+      "medianMs": 12.5,
+      "maxMs": 13.3
+    },
+    {
+      "n": 200,
+      "density": 0.1,
+      "algorithm": "scc-tarjan-kahn-v1",
+      "samplesMs": [
+        8.4,
+        8.3,
+        8.8
+      ],
+      "medianMs": 8.4,
+      "maxMs": 8.8
+    },
+    {
+      "n": 200,
+      "density": 1,
+      "algorithm": "hierarchical-average-v1",
+      "samplesMs": [
+        11.9,
+        11.8,
+        11.7
+      ],
+      "medianMs": 11.8,
+      "maxMs": 11.9
+    },
+    {
+      "n": 200,
+      "density": 1,
+      "algorithm": "scc-tarjan-kahn-v1",
+      "samplesMs": [
+        10.4,
+        9.6,
+        10.3
+      ],
+      "medianMs": 10.3,
+      "maxMs": 10.4
+    },
+    {
+      "n": 500,
+      "density": 0,
+      "algorithm": "hierarchical-average-v1",
+      "samplesMs": [
+        39.7,
+        39,
+        39.1
+      ],
+      "medianMs": 39.1,
+      "maxMs": 39.7
+    },
+    {
+      "n": 500,
+      "density": 0,
+      "algorithm": "scc-tarjan-kahn-v1",
+      "samplesMs": [
+        23.7,
+        23.6,
+        23.8
+      ],
+      "medianMs": 23.7,
+      "maxMs": 23.8
+    },
+    {
+      "n": 500,
+      "density": 0.01,
+      "algorithm": "hierarchical-average-v1",
+      "samplesMs": [
+        43.4,
+        42.3,
+        44.4
+      ],
+      "medianMs": 43.4,
+      "maxMs": 44.4
+    },
+    {
+      "n": 500,
+      "density": 0.01,
+      "algorithm": "scc-tarjan-kahn-v1",
+      "samplesMs": [
+        23.1,
+        22.6,
+        23.2
+      ],
+      "medianMs": 23.1,
+      "maxMs": 23.2
+    },
+    {
+      "n": 500,
+      "density": 0.1,
+      "algorithm": "hierarchical-average-v1",
+      "samplesMs": [
+        44,
+        44.8,
+        44.3
+      ],
+      "medianMs": 44.3,
+      "maxMs": 44.8
+    },
+    {
+      "n": 500,
+      "density": 0.1,
+      "algorithm": "scc-tarjan-kahn-v1",
+      "samplesMs": [
+        25.8,
+        25,
+        25.4
+      ],
+      "medianMs": 25.4,
+      "maxMs": 25.8
+    },
+    {
+      "n": 500,
+      "density": 1,
+      "algorithm": "hierarchical-average-v1",
+      "samplesMs": [
+        39.4,
+        39.2,
+        39.3
+      ],
+      "medianMs": 39.3,
+      "maxMs": 39.4
+    },
+    {
+      "n": 500,
+      "density": 1,
+      "algorithm": "scc-tarjan-kahn-v1",
+      "samplesMs": [
+        27.1,
+        27.1,
+        26.3
+      ],
+      "medianMs": 27.1,
+      "maxMs": 27.1
+    }
+  ]
+}
