@@ -1,8 +1,8 @@
 import { assertMatrix, assertZeroDiagonal, DomainError, type DenseMatrix } from '../domain';
 export interface Merge { id: number; left: number; right: number; distance: number; size: number }
 export interface Hierarchy { n: number; merges: Merge[]; evaluations: number }
-export interface Progress { iterations: number; evaluations: number; phase: string }
-export interface ComputeContext { checkpoint(progress: Progress): Promise<void> }
+export interface Progress { iterations: number; evaluations: number; phase: string; bestValue?:number;bestCount?:number;temperature?:number }
+export interface ComputeContext { checkpoint(progress: Progress): Promise<void>;shouldStop?:()=> 'cancelled'|'time-limit'|undefined;replay?:{iterations:number;evaluations:number;calibrationAttempts?:number;status?:'limit-reached'|'cancelled';stopReason?:string} }
 export const immediateContext: ComputeContext = { checkpoint: async () => {} };
 export const defaultK = (n: number) => Math.min(n, Math.max(2, Math.round(Math.sqrt(n))));
 

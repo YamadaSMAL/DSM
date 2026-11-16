@@ -26,13 +26,13 @@ export class AnalysisClient {
     const snapshot = { ...source, values: source.values.slice() };
     return new Promise((resolve, reject) => {
       const finish = () => { const active = this.active; if (active?.runId === runId) { clearTimeout(active.timer); clearTimeout(active.cancelTimer); this.active = null; } };
-      this.active = { runId, revision: source.revision, reject, cancelling: false, timer: setTimeout(() => { finish(); worker.terminate(); if (this.worker === worker) this.worker = null; reject(new AnalysisStopped('limit-reached', '30秒の上限に達しました。')); }, 30_000) };
+      this.active = { runId, revision: source.revision, reject, cancelling: false, timer: setTimeout(() => { finish(); worker.terminate(); if (this.worker === worker) this.worker = null; reject(new AnalysisStopped('limit-reached', '30秒の上限に達しました。')); }, 31_000) };
       worker.onmessage = ({ data }: MessageEvent<AnalysisResponse>) => {
         const active = this.active;
         if (this.worker !== worker || !active || data.runId !== runId || data.dataRevision !== source.revision) return;
         if (data.status === 'progress') { if (!active.cancelling) progress(data); return; }
         const cancelling = active.cancelling; finish();
-        if (cancelling) reject(new AnalysisStopped('cancelled', '解析を取り消しました。'));
+        if (cancelling && !(data.status==='completed'&&data.result.status==='cancelled')) reject(new AnalysisStopped('cancelled', '解析を取り消しました。'));
         else if (data.status === 'completed') resolve(data.result);
         else reject(new AnalysisStopped(data.status, data.error));
       };

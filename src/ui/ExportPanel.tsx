@@ -19,6 +19,6 @@ export function ExportPanel({capture}:{capture:()=>SessionData|null}){
     finally{if(token===generation.current)setBusy(false);}
   }
   return <section className="panel" aria-label="出力と保存"><h2>05 · 出力と保存</h2><p>保存ファイルには入力ラベル・行列・来歴・解析結果が含まれます。共有先を確認してください。出力開始時の選択結果と現在ビューを固定し、未実行の設定変更は含めません。</p><label>レポートタイトル<input aria-label="レポートタイトル" maxLength={200} value={title} onChange={e=>setTitle(e.target.value)}/></label>
-    <p>対象: {selected?`${selected.mode} / ${selected.algorithm.id} / ${selected.runId}`:'入力のみ（HTML/XLSXは完了結果の選択が必要）'}<br/>内容: HTMLは元DSMと現在ビュー・概要・所属・指標・固定条件・比較一覧。XLSXは元セル表と解析DSM、JSONは元セル表と再現条件を保存します{current?` / ${current.runs.length}結果`:''}。JSONは全結果とundo/redo履歴も保存します。</p>
+    <p>対象: {selected?`${selected.mode} / ${selected.algorithm.id} / ${selected.runId}`:'入力のみ（HTML/XLSXは結果（暫定を含む）の選択が必要）'}<br/>内容: HTMLは元DSMと現在ビュー・概要・所属・指標・固定条件・比較一覧。XLSXは元セル表と解析DSM、JSONは元セル表と再現条件を保存します{current?` / ${current.runs.length}結果`:''}。JSONは全結果とundo/redo履歴も保存します。</p>
     <div className="actions"><button disabled={!selected||busy} onClick={()=>void save('html')}>単独HTMLを書き出す</button><button disabled={!selected||busy} onClick={()=>void save('xlsx')}>XLSXを書き出す</button><button disabled={!current||busy} onClick={()=>void save('json')}>セッションJSONを保存</button><button disabled={!busy} onClick={()=>{generation.current++;client.current?.cancel();setBusy(false);setStatus('出力を取り消しました。');}}>出力を取消</button></div><p role="status" data-testid="export-status">{status}</p><p>セッションは64MiB・100結果まで。JSONの再読込は上の入力ファイルで選択し、検証・プレビュー後に確定してください。</p></section>;
 }

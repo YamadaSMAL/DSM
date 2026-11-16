@@ -73,3 +73,7 @@ h3 { font-size: 15px; }
 .order-list li { margin: 6px; }
 .order-list button { width: 100%; text-align: left; }
 @media (max-width: 950px) { .comparison-canvases { grid-template-columns: 1fr; } }
+
+.analysis-workspace .table-scroll table { width: 100%; }
+.table-scroll button { white-space: nowrap; }
+.table-scroll details p { max-width: 360px; }

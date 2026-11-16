@@ -30,7 +30,7 @@ it('協調取消はcancel応答を受け、Workerを次の実行に再利用す�
 });
 it('応答しないWorkerは取消1秒・実行上限30秒で停止し、新規生成できる',async()=>{
   vi.useFakeTimers();const client=new AnalysisClient();const first=client.run(source(),'scc-tarjan-kahn-v1',{}, {},()=>{}), rejected=expect(first).rejects.toMatchObject({status:'cancelled'});client.cancel();await vi.advanceTimersByTimeAsync(1000);await rejected;expect(FakeWorker.all[0]!.terminated).toBe(true);
-  const second=client.run(source(),'scc-tarjan-kahn-v1',{}, {},()=>{}), timed=expect(second).rejects.toMatchObject({status:'limit-reached'});await vi.advanceTimersByTimeAsync(30_000);await timed;expect(FakeWorker.all[1]!.terminated).toBe(true);
+  const second=client.run(source(),'scc-tarjan-kahn-v1',{}, {},()=>{}), timed=expect(second).rejects.toMatchObject({status:'limit-reached'});await vi.advanceTimersByTimeAsync(31_000);await timed;expect(FakeWorker.all[1]!.terminated).toBe(true);
 });
 it('異常終了を失敗として扱う',async()=>{
   const client=new AnalysisClient();const promise=client.run(source(),'scc-tarjan-kahn-v1',{}, {},()=>{}), rejected=expect(promise).rejects.toMatchObject({status:'failed'});FakeWorker.all[0]!.onerror!();await rejected;

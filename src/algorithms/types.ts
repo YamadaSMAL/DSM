@@ -1,9 +1,9 @@
 import type { AnalysisMatrices, AnalysisMode, MatrixData, Transformation } from '../domain';
 import type { ComputeContext, Hierarchy } from './hierarchical';
 import type { SccResult } from './process';
-export interface Parameters { k?: number; alpha?: number }
+export interface Parameters { k?: number; alpha?: number;seed?:number;maxProposals?:number;maxEvaluations?:number;coolingInterval?:number;coolingRate?:number;temperatureFloor?:number;temperatureSamples?:number;initialization?:'separate'|'hierarchical';inflation?:number;maxIterations?:number;pruneThreshold?:number;convergenceTolerance?:number;stableIterations?:number }
 export interface AnalysisInput { source: MatrixData; matrices: AnalysisMatrices; inputHash: string }
-export interface Solution { order: number[]; membership?: number[]; sccMembership?: number[]; bandByElement?: number[]; scc?: SccResult; hierarchy?: Hierarchy; cacheHit?: boolean; iterations: number; evaluations: number }
+export interface Solution { order: number[]; membership?: number[]; sccMembership?: number[]; bandByElement?: number[]; scc?: SccResult; hierarchy?: Hierarchy; cacheHit?: boolean; iterations: number; evaluations: number;status?:'completed'|'limit-reached'|'cancelled';stopReason?:string;converged?:boolean;initialState?:{order:number[];membership?:number[]};trace?:Record<string,number> }
 export interface AlgorithmPlugin {
   id: string; version: string; label: string; mode: AnalysisMode; baseline: boolean;
   limits: { maxN: number }; capabilities: { seeded: boolean; constraints: string[] };
@@ -15,6 +15,7 @@ export interface RunResult extends Solution {
   algorithm: { id: string; version: string }; parameters: Parameters;
   preprocessing: Transformation[]; options: { threshold: number; binary: boolean };
   environment?: {createdAt:string;timeZone:string;appVersion:string;appCommit:string;userAgent:string};
-  status: 'completed'; stopReason: string; metrics: Record<string, number | null>; metricVersions: Record<string, string>;
+  seed?:number;prngVersion?:string;batch?:{id:string;rootSeed:number;index:number;count:number;seeds?:number[]};
+  status: 'completed'|'limit-reached'|'cancelled'; stopReason: string; metrics: Record<string, number | null>; metricVersions: Record<string, string>;
   elapsedMs: number; warnings: string[];
 }

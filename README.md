@@ -1,6 +1,6 @@
 # DSM解析Webアプリ
 
-[実装仕様書](SPECIFICATION.md)を正本とするブラウザ完結型アプリ。M0の計算基盤、M1の取込・検証・可視化、M2の最小解析・比較・手動順序ビュー、M3の出力・セッション復元を実装済み（v0.1.0）。
+[実装仕様書](SPECIFICATION.md)を正本とするブラウザ完結型アプリ。M0の計算基盤、M1の取込・検証・可視化、M2の最小解析・比較・手動順序ビュー、M3の出力・セッション復元、M4の焼きなまし・MCL・複数seed比較を実装済み（v0.2.0）。
 
 ## 起動と検証
 
@@ -45,6 +45,9 @@ DSM_BROWSER_EXECUTABLE='/Applications/Brave Browser.app/Contents/MacOS/Brave Bro
 - **M3出力**: 単独HTML（file://でオフライン検索・ズーム・パン・詳細、印刷画像）、XLSXの9シート、セッションJSON。出力開始時の選択結果・現在ビューを固定し、Workerで整合性・指標を再検証する。
 - **M3復元・配信**: JSONの型・寸法・元セル・ハッシュ・結果・ビューを検証し、プレビュー確定で復元。CIとPages用workflow、/test-repo/配下のE2Eを追加。公開は有効化設定を行うまで実行しない。
 
+- **M4探索**: 構造所属とSCC内順序の焼きなまし、seed付き有限予算、最良解保持・差分評価。MCLはアプリ独自の排他的抽出、列正規化・prune・収束判定、上限200要素。
+- **M4実行・保存**: 既定10seedを逐次処理し、成功例の最良・中央値・最悪・母標準偏差・成功数を表示。時間上限／取消の暫定解、MCL未収束を区別しランキングから除外。seed・初期解・停止条件・暫定状態を保存／復元する。
+
 内部は「行が列に依存」、グラフは列→行。逆規約の入力は転置して記録する。元セル表・元A・解析用行列を分け、既存domain関数を共用して元データを変更しない。構造／工程のモードは同じ優先度。IGTA++はM5で原典照合後に追加する。
 
 ## 対応上限と制限
@@ -53,7 +56,7 @@ DSM_BROWSER_EXECUTABLE='/Applications/Brave Browser.app/Contents/MacOS/Brave Bro
 
 XLSXは実展開量100MiB・10,000エントリで中断する。SheetJSへは展開後の無圧縮ZIPを渡す。選択範囲はヘッダー込み501×501まで。巨大な申告範囲は範囲指定で絞る必要がある。展開上限は総メモリ上限ではなく、ブック全体のXML解釈と一時コピーの追加メモリを要する。
 
-ブラウザ操作はBrave（Chromium）で検証。Chrome／Edge／Firefox／Safariの個別互換性、30fpsの継続パン、最大メモリは未検証。XLSX出力は型・列幅を保持し、式とリンクを生成しない。手動並べ替え・undo/redoは実装済み。階層法は最悪O(n³)で大域最適を保証せず、工程のSCC内は元index順のため循環とフィードバックが残る。Bandは同時実行の保証ではない。
+ブラウザ操作はBrave（Chromium）で検証。Chrome／Edge／Firefox／Safariの個別互換性、30fpsの継続パン、最大メモリは未検証。XLSX出力は型・列幅を保持し、式とリンクを生成しない。手動並べ替え・undo/redoは実装済み。階層法は最悪O(n³)で大域最適を保証せず、Tarjan/Kahn単独のSCC内は元index順。焼きなましで内部順序を探索しても循環やフィードバックが消える保証はない。Bandは同時実行の保証ではない。
 
 ## 主なファイル
 
@@ -68,10 +71,10 @@ XLSXは実展開量100MiB・10,000エントリで中断する。SheetJSへは展
 | `tests/unit/`, `tests/property/` | 数値基盤・取込・Workerの検証 |
 | `tests/e2e/` | 本番ブラウザ操作と100/200/500要素ベンチマーク |
 | `docs/decisions.md` | 判断・理由・次段階への契約 |
-| `docs/M0-validation.md`, `docs/M1-validation.md`, `docs/M2-validation.md`, `docs/M3-validation.md` | 段階別検証記録 |
+| `docs/M0-validation.md`, `docs/M1-validation.md`, `docs/M2-validation.md`, `docs/M3-validation.md`, `docs/M4-validation.md` | 段階別検証記録 |
 | `docs/benchmarks.md` | 基準環境、実測と未検証事項 |
 | `docs/dependencies.md` | 固定版、取得元、ライセンス |
 
-M2の詳細・性能値は [M2検証記録](docs/M2-validation.md) と [benchmarks](docs/benchmarks.md)。追加の外部依存はない。M3の使い方・保存・公開設定は [v0.1手順書](docs/v0.1-guide.md)、検証は [M3検証記録](docs/M3-validation.md)。次はM4の複数探索手法。
+M2の詳細・性能値は [M2検証記録](docs/M2-validation.md) と [benchmarks](docs/benchmarks.md)。追加の外部依存はない。M3の使い方・保存・公開設定は [v0.1手順書](docs/v0.1-guide.md)、検証は [M3検証記録](docs/M3-validation.md)。M4の操作と制限は [v0.2手順書](docs/v0.2-guide.md)、検証は [M4検証記録](docs/M4-validation.md)。次はM5の原典照合。
 
 入力情報はメモリのみで保持し、自動保存・外部送信しない。ページを再読込すると失われる。再開にはセッションJSONを保存し、入力ファイルから検証・再読込する。HTML/XLSXは閲覧・共有用。

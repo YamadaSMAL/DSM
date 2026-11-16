@@ -1,12 +1,13 @@
 import { analysisInputHash, assertPermutation, canonicalAnalysisInput, type MatrixData } from '../domain';
-import { algorithms, runAnalysis } from '../algorithms/registry';
-import type { RunResult } from '../algorithms/types';
+import { algorithms, normalizeParameters, runAnalysis } from '../algorithms/registry';
+import { assertSeed, deriveSeeds, PRNG_VERSION } from '../algorithms/random';
+import type { Parameters, RunResult } from '../algorithms/types';
 import type { ViewHistory } from '../state/views';
 import { defaultOptions, type ImportOptions, type SourceTable } from './types';
 import { coordinate, validateTable } from './validate';
 export const SESSION_LIMIT = 64 * 1024 * 1024;
 export interface ArtifactMetadata { createdAt: string; timeZone: string; appVersion: string; appCommit: string; userAgent: string }
-export interface SessionSettings { algorithmId: string; options: { threshold: number; binary: boolean }; parameters: { k?: number; alpha?: number }; color: { log: boolean; alternative: boolean } }
+export interface SessionSettings { algorithmId: string; options: { threshold: number; binary: boolean }; parameters: Parameters; color: { log: boolean; alternative: boolean };seed?:number }
 export interface SessionData {
   schemaVersion: 1; kind: 'dsm-session'; title: string; metadata: ArtifactMetadata;
   input: MatrixData; source: SourceTable; runs: RunResult[]; views: Record<string, ViewHistory>;
@@ -44,7 +45,10 @@ function settings(value: unknown, n: number): SessionSettings {
   if (!plugin) fail('未知の手法です。');
   const options = obj(raw['options']), parameters = obj(raw['parameters']), color = obj(raw['color']);
   const result: SessionSettings = { algorithmId, options: { threshold: finite(options['threshold']), binary: bool(options['binary']) }, parameters: {}, color: { log: bool(color['log']), alternative: bool(color['alternative']) } };
-  if (plugin.mode === 'structure') { const alpha = finite(parameters['alpha']); if (alpha === 0 || alpha > 3) fail('αの範囲が不正です。'); result.parameters.alpha = alpha; if (algorithmId === 'hierarchical-average-v1') result.parameters.k = integer(parameters['k'],1,n); }
+  for(const [key,value]of Object.entries(parameters)){if(key==='initialization'){if(value!=='separate'&&value!=='hierarchical')fail('初期解設定が不正です。');}else if(typeof value!=='number'||!Number.isFinite(value))fail('パラメータの型が不正です。');}
+  result.parameters=normalizeParameters(n,algorithmId,parameters as Parameters);
+  if(plugin.capabilities.seeded){const seed=raw['seed']??0;assertSeed(seed as number);result.seed=seed as number;}else if(raw['seed']!==undefined)fail('決定的設定にseedは不要です。');
+
   return result;
 }
 function metadata(value: unknown): ArtifactMetadata {
@@ -82,21 +86,34 @@ export async function validateSession(value: unknown): Promise<SessionData> {
     if (!/^[a-zA-Z0-9_-]+$/.test(runId) || ids.has(runId)) fail('結果IDが重複または不正です。'); ids.add(runId);
     permutation(r['order'],n);
     const algorithm=obj(r['algorithm']), algorithmId=string(algorithm['id']);
-    const plugin=algorithms.find(a=>a.id===algorithmId); if (!plugin || algorithm['version']!==plugin.version || r['status']!=='completed' || r['dataRevision']!==revision) fail('結果の版・状態・revisionが不正です。');
-    const condition=settings({algorithmId,parameters:r['parameters'],options:r['options'],color:{log:false,alternative:false}},n);
-    const fresh=await runAnalysis(input,algorithmId,condition.parameters,condition.options,runId,undefined,cache);
-    for(const key of ['inputHash','mode','parameters','options','order','membership','sccMembership','bandByElement','scc','hierarchy','preprocessing','metricVersions','warnings','stopReason'] as const) equal(r[key],fresh[key],key);
+    const plugin=algorithms.find(a=>a.id===algorithmId); if (!plugin || algorithm['version']!==plugin.version || !['completed','limit-reached','cancelled'].includes(String(r['status'])) || r['dataRevision']!==revision) fail('結果の版・状態・revisionが不正です。');
+    const condition=settings({algorithmId,parameters:r['parameters'],options:r['options'],color:{log:false,alternative:false},seed:r['seed']},n);
+    const status=string(r['status']),stopReason=string(r['stopReason']),iterations=integer(r['iterations'],0,Number.MAX_SAFE_INTEGER),evaluations=integer(r['evaluations'],0,Number.MAX_SAFE_INTEGER);
+    if(plugin.capabilities.seeded){assertSeed(r['seed'] as number);if(r['prngVersion']!==PRNG_VERSION)fail('PRNG版が不正です。');}else if(r['seed']!==undefined||r['prngVersion']!==undefined)fail('決定的手法にseedは指定できません。');
+    const interrupted=status!=='completed'&&(stopReason==='time-limit'||stopReason==='cancelled');
+    if(status==='cancelled'&&stopReason!=='cancelled'||status==='limit-reached'&&stopReason!=='time-limit'&&stopReason!=='iteration-limit')fail('暫定状態の停止理由が不正です。');
+    const trace=r['trace']!==undefined?obj(r['trace']):{};
+    if(condition.parameters.maxProposals!==undefined&&(iterations>condition.parameters.maxProposals||evaluations>condition.parameters.maxEvaluations!))fail('探索予算を超えています。');
+    if(condition.parameters.maxIterations!==undefined&&iterations>condition.parameters.maxIterations)fail('反復上限を超えています。');
+    if(status!=='completed'&&!['sa-cluster-v1','sa-sequence-v1','mcl-exclusive-v1'].includes(algorithmId))fail('暫定解に未対応の手法です。');
+    const context=interrupted?{checkpoint:async()=>{},replay:{iterations,evaluations,...(trace['calibrationAttempts']!==undefined?{calibrationAttempts:integer(trace['calibrationAttempts'],0,10000)}:{}),status:status as 'cancelled'|'limit-reached',stopReason}}:undefined;
+    const fresh=await runAnalysis(input,algorithmId,{...condition.parameters,...(plugin.capabilities.seeded?{seed:r['seed'] as number}:{})},condition.options,runId,context,cache);
+
+    for(const key of ['inputHash','mode','parameters','options','order','membership','sccMembership','bandByElement','scc','hierarchy','preprocessing','metricVersions','warnings','stopReason','status','seed','prngVersion','converged','initialState','trace'] as const) equal(r[key],fresh[key],key);
     const actualMetrics=obj(r['metrics']);
     if (Object.keys(actualMetrics).length!==Object.keys(fresh.metrics).length) fail('指標の件数が不正です。');
     for(const [key,expected] of Object.entries(fresh.metrics)) { const actual=actualMetrics[key]; if(expected===null ? actual!==null : typeof actual!=='number' || !Number.isFinite(actual) || Math.abs(actual-expected)>1e-9*Math.max(1,Math.abs(actual),Math.abs(expected))) fail(`指標${key}が一致しません。`); }
-    runs.push({...fresh,elapsedMs:finite(r['elapsedMs']),iterations:integer(r['iterations'],0,Number.MAX_SAFE_INTEGER),evaluations:integer(r['evaluations'],0,Number.MAX_SAFE_INTEGER),stopReason:string(r['stopReason']),warnings:array(r['warnings'],100).map(v=>string(v,10000)),...(r['cacheHit']!==undefined?{cacheHit:bool(r['cacheHit'])}:{}),...(r['environment']!==undefined?{environment:metadata(r['environment'])}:{})});
+    if(algorithmId.startsWith('sa-')||algorithmId==='mcl-exclusive-v1'){equal(iterations,fresh.iterations,'反復回数');equal(evaluations,fresh.evaluations,'評価回数');}
+    let batch:RunResult['batch'];if(r['batch']!==undefined){const b=obj(r['batch']),id=string(b['id'],100),rootSeed=integer(b['rootSeed'],0,0xffffffff),count=integer(b['count'],1,100),index=integer(b['index'],0,count-1);if(!plugin.capabilities.seeded||!/^[a-zA-Z0-9_-]+$/.test(id)||deriveSeeds(rootSeed,count)[index]!==fresh.seed)fail('複数seedの情報が不正です。');if(b['seeds']!==undefined)equal(b['seeds'],deriveSeeds(rootSeed,count),'全試行seed');batch={id,rootSeed,index,count,...(b['seeds']!==undefined?{seeds:deriveSeeds(rootSeed,count)}:{})};}
+    runs.push({...fresh,...(batch?{batch}:{}),elapsedMs:finite(r['elapsedMs']),iterations:integer(r['iterations'],0,Number.MAX_SAFE_INTEGER),evaluations:integer(r['evaluations'],0,Number.MAX_SAFE_INTEGER),stopReason:string(r['stopReason']),warnings:array(r['warnings'],100).map(v=>string(v,10000)),...(r['cacheHit']!==undefined?{cacheHit:bool(r['cacheHit'])}:{}),...(r['environment']!==undefined?{environment:metadata(r['environment'])}:{})});
   }
+  const batches=new Map<string,{condition:string;indices:Set<number>}>();for(const run of runs)if(run.batch){const condition=canonical([run.batch.rootSeed,run.batch.count,run.algorithm,run.parameters,run.inputHash]);const previous=batches.get(run.batch.id);if(previous&&(previous.condition!==condition||previous.indices.has(run.batch.index)))fail('複数seedの試行が重複または条件不一致です。');const state=previous??{condition,indices:new Set<number>()};state.indices.add(run.batch.index);batches.set(run.batch.id,state);}
   const views: Record<string,ViewHistory>={}, savedViews=obj(raw['views']);
   if(Object.keys(savedViews).some(id=>!ids.has(id)))fail('対応しないビューがあります。');
   for(const run of runs) { const h=obj(savedViews[run.runId]); views[run.runId]={order:permutation(h['order'],n),past:array(h['past'],100).map(v=>permutation(v,n)),future:array(h['future'],100).map(v=>permutation(v,n))}; if(views[run.runId]!.past.length+views[run.runId]!.future.length>100)fail('ビュー履歴が100件を超えています。'); }
   const selectedRunId=string(raw['selectedRunId'],100); if(runs.length ? !ids.has(selectedRunId) : selectedRunId!=='')fail('選択結果が不正です。');
   const savedSettings=settings(raw['settings'],n),selected=runs.find(r=>r.runId===selectedRunId);
-  if(selected){equal(savedSettings.algorithmId,selected.algorithm.id,'保存設定の手法');equal(savedSettings.options,selected.options,'保存設定の前処理');equal(savedSettings.parameters,selected.parameters,'保存設定のパラメータ');}
+  if(selected){equal(savedSettings.algorithmId,selected.algorithm.id,'保存設定の手法');equal(savedSettings.options,selected.options,'保存設定の前処理');equal(savedSettings.parameters,selected.parameters,'保存設定のパラメータ');equal(savedSettings.seed,selected.seed,'保存設定のseed');}
   return {schemaVersion:1,kind:'dsm-session',title:string(raw['title'],200),metadata:metadata(raw['metadata']),input,source,runs,views,selectedRunId,settings:savedSettings};
 }
 export function serializeSession(session: SessionData): string {

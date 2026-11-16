@@ -1,0 +1,1099 @@
+{
+  "browser": "157.0.8103.79",
+  "seed": 20261116,
+  "repetitions": 3,
+  "maxProposals": 100000,
+  "maxEvaluations": 100101,
+  "mclMaxIterations": 100,
+  "note": "各手法の既定予算。新規ワークスペース、計算Worker内部の前処理・ハッシュ・指標を含み転送と描画を除外。",
+  "results": [
+    {
+      "n": 100,
+      "density": 0,
+      "algorithm": "sa-cluster-v1",
+      "samplesMs": [
+        47.5,
+        47.2,
+        45.5
+      ],
+      "medianMs": 47.2,
+      "maxMs": 47.5,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 99992,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 99992,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 99992,
+          "converged": null
+        }
+      ]
+    },
+    {
+      "n": 100,
+      "density": 0,
+      "algorithm": "sa-sequence-v1",
+      "samplesMs": [
+        4.6,
+        4.9,
+        5.1
+      ],
+      "medianMs": 4.9,
+      "maxMs": 5.1,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 0,
+          "evaluations": 1,
+          "converged": null
+        },
+        {
+          "iterations": 0,
+          "evaluations": 1,
+          "converged": null
+        },
+        {
+          "iterations": 0,
+          "evaluations": 1,
+          "converged": null
+        }
+      ]
+    },
+    {
+      "n": 100,
+      "density": 0,
+      "algorithm": "mcl-exclusive-v1",
+      "samplesMs": [
+        7.5,
+        7.6,
+        7.3
+      ],
+      "medianMs": 7.5,
+      "maxMs": 7.6,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 5,
+          "evaluations": 5,
+          "converged": true
+        },
+        {
+          "iterations": 5,
+          "evaluations": 5,
+          "converged": true
+        },
+        {
+          "iterations": 5,
+          "evaluations": 5,
+          "converged": true
+        }
+      ]
+    },
+    {
+      "n": 100,
+      "density": 0.01,
+      "algorithm": "sa-cluster-v1",
+      "samplesMs": [
+        48,
+        48.6,
+        47.5
+      ],
+      "medianMs": 48,
+      "maxMs": 48.6,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 100034,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100034,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100034,
+          "converged": null
+        }
+      ]
+    },
+    {
+      "n": 100,
+      "density": 0.01,
+      "algorithm": "sa-sequence-v1",
+      "samplesMs": [
+        18.6,
+        18,
+        17.5
+      ],
+      "medianMs": 18,
+      "maxMs": 18.6,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        }
+      ]
+    },
+    {
+      "n": 100,
+      "density": 0.01,
+      "algorithm": "mcl-exclusive-v1",
+      "samplesMs": [
+        11.2,
+        13.1,
+        11.1
+      ],
+      "medianMs": 11.2,
+      "maxMs": 13.1,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 21,
+          "evaluations": 21,
+          "converged": true
+        },
+        {
+          "iterations": 21,
+          "evaluations": 21,
+          "converged": true
+        },
+        {
+          "iterations": 21,
+          "evaluations": 21,
+          "converged": true
+        }
+      ]
+    },
+    {
+      "n": 100,
+      "density": 0.1,
+      "algorithm": "sa-cluster-v1",
+      "samplesMs": [
+        46.5,
+        46.3,
+        45.9
+      ],
+      "medianMs": 46.3,
+      "maxMs": 46.5,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 100098,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100098,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100098,
+          "converged": null
+        }
+      ]
+    },
+    {
+      "n": 100,
+      "density": 0.1,
+      "algorithm": "sa-sequence-v1",
+      "samplesMs": [
+        28,
+        28.4,
+        28.3
+      ],
+      "medianMs": 28.3,
+      "maxMs": 28.4,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        }
+      ]
+    },
+    {
+      "n": 100,
+      "density": 0.1,
+      "algorithm": "mcl-exclusive-v1",
+      "samplesMs": [
+        14.8,
+        14.9,
+        15.5
+      ],
+      "medianMs": 14.9,
+      "maxMs": 15.5,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 17,
+          "evaluations": 17,
+          "converged": true
+        },
+        {
+          "iterations": 17,
+          "evaluations": 17,
+          "converged": true
+        },
+        {
+          "iterations": 17,
+          "evaluations": 17,
+          "converged": true
+        }
+      ]
+    },
+    {
+      "n": 100,
+      "density": 1,
+      "algorithm": "sa-cluster-v1",
+      "samplesMs": [
+        46.9,
+        45,
+        46.1
+      ],
+      "medianMs": 46.1,
+      "maxMs": 46.9,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 100096,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100096,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100096,
+          "converged": null
+        }
+      ]
+    },
+    {
+      "n": 100,
+      "density": 1,
+      "algorithm": "sa-sequence-v1",
+      "samplesMs": [
+        27.3,
+        26.6,
+        26.8
+      ],
+      "medianMs": 26.8,
+      "maxMs": 27.3,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        }
+      ]
+    },
+    {
+      "n": 100,
+      "density": 1,
+      "algorithm": "mcl-exclusive-v1",
+      "samplesMs": [
+        13.5,
+        13.2,
+        13.7
+      ],
+      "medianMs": 13.5,
+      "maxMs": 13.7,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 5,
+          "evaluations": 5,
+          "converged": true
+        },
+        {
+          "iterations": 5,
+          "evaluations": 5,
+          "converged": true
+        },
+        {
+          "iterations": 5,
+          "evaluations": 5,
+          "converged": true
+        }
+      ]
+    },
+    {
+      "n": 200,
+      "density": 0,
+      "algorithm": "sa-cluster-v1",
+      "samplesMs": [
+        143.2,
+        131.4,
+        132.3
+      ],
+      "medianMs": 132.3,
+      "maxMs": 143.2,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 100054,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100054,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100054,
+          "converged": null
+        }
+      ]
+    },
+    {
+      "n": 200,
+      "density": 0,
+      "algorithm": "sa-sequence-v1",
+      "samplesMs": [
+        9.6,
+        9.4,
+        9.5
+      ],
+      "medianMs": 9.5,
+      "maxMs": 9.6,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 0,
+          "evaluations": 1,
+          "converged": null
+        },
+        {
+          "iterations": 0,
+          "evaluations": 1,
+          "converged": null
+        },
+        {
+          "iterations": 0,
+          "evaluations": 1,
+          "converged": null
+        }
+      ]
+    },
+    {
+      "n": 200,
+      "density": 0,
+      "algorithm": "mcl-exclusive-v1",
+      "samplesMs": [
+        14,
+        16.1,
+        15.9
+      ],
+      "medianMs": 15.9,
+      "maxMs": 16.1,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 5,
+          "evaluations": 5,
+          "converged": true
+        },
+        {
+          "iterations": 5,
+          "evaluations": 5,
+          "converged": true
+        },
+        {
+          "iterations": 5,
+          "evaluations": 5,
+          "converged": true
+        }
+      ]
+    },
+    {
+      "n": 200,
+      "density": 0.01,
+      "algorithm": "sa-cluster-v1",
+      "samplesMs": [
+        142.4,
+        142.4,
+        132.4
+      ],
+      "medianMs": 142.4,
+      "maxMs": 142.4,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 100084,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100084,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100084,
+          "converged": null
+        }
+      ]
+    },
+    {
+      "n": 200,
+      "density": 0.01,
+      "algorithm": "sa-sequence-v1",
+      "samplesMs": [
+        67.1,
+        67.7,
+        67.3
+      ],
+      "medianMs": 67.3,
+      "maxMs": 67.7,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        }
+      ]
+    },
+    {
+      "n": 200,
+      "density": 0.01,
+      "algorithm": "mcl-exclusive-v1",
+      "samplesMs": [
+        28.4,
+        26.8,
+        28.1
+      ],
+      "medianMs": 28.1,
+      "maxMs": 28.4,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 19,
+          "evaluations": 19,
+          "converged": true
+        },
+        {
+          "iterations": 19,
+          "evaluations": 19,
+          "converged": true
+        },
+        {
+          "iterations": 19,
+          "evaluations": 19,
+          "converged": true
+        }
+      ]
+    },
+    {
+      "n": 200,
+      "density": 0.1,
+      "algorithm": "sa-cluster-v1",
+      "samplesMs": [
+        154.9,
+        146.3,
+        142.4
+      ],
+      "medianMs": 146.3,
+      "maxMs": 154.9,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 100092,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100092,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100092,
+          "converged": null
+        }
+      ]
+    },
+    {
+      "n": 200,
+      "density": 0.1,
+      "algorithm": "sa-sequence-v1",
+      "samplesMs": [
+        65.7,
+        76.8,
+        67.2
+      ],
+      "medianMs": 67.2,
+      "maxMs": 76.8,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        }
+      ]
+    },
+    {
+      "n": 200,
+      "density": 0.1,
+      "algorithm": "mcl-exclusive-v1",
+      "samplesMs": [
+        54.1,
+        52.6,
+        51.2
+      ],
+      "medianMs": 52.6,
+      "maxMs": 54.1,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 15,
+          "evaluations": 15,
+          "converged": true
+        },
+        {
+          "iterations": 15,
+          "evaluations": 15,
+          "converged": true
+        },
+        {
+          "iterations": 15,
+          "evaluations": 15,
+          "converged": true
+        }
+      ]
+    },
+    {
+      "n": 200,
+      "density": 1,
+      "algorithm": "sa-cluster-v1",
+      "samplesMs": [
+        139.7,
+        135.3,
+        143.8
+      ],
+      "medianMs": 139.7,
+      "maxMs": 143.8,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 100096,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100096,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100096,
+          "converged": null
+        }
+      ]
+    },
+    {
+      "n": 200,
+      "density": 1,
+      "algorithm": "sa-sequence-v1",
+      "samplesMs": [
+        77.1,
+        65.5,
+        76.7
+      ],
+      "medianMs": 76.7,
+      "maxMs": 77.1,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        }
+      ]
+    },
+    {
+      "n": 200,
+      "density": 1,
+      "algorithm": "mcl-exclusive-v1",
+      "samplesMs": [
+        45.5,
+        44.9,
+        46.5
+      ],
+      "medianMs": 45.5,
+      "maxMs": 46.5,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 5,
+          "evaluations": 5,
+          "converged": true
+        },
+        {
+          "iterations": 5,
+          "evaluations": 5,
+          "converged": true
+        },
+        {
+          "iterations": 5,
+          "evaluations": 5,
+          "converged": true
+        }
+      ]
+    },
+    {
+      "n": 500,
+      "density": 0,
+      "algorithm": "sa-cluster-v1",
+      "samplesMs": [
+        586.7,
+        573.2,
+        615.1
+      ],
+      "medianMs": 586.7,
+      "maxMs": 615.1,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 100098,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100098,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100098,
+          "converged": null
+        }
+      ]
+    },
+    {
+      "n": 500,
+      "density": 0,
+      "algorithm": "sa-sequence-v1",
+      "samplesMs": [
+        29.4,
+        28.5,
+        29.9
+      ],
+      "medianMs": 29.4,
+      "maxMs": 29.9,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 0,
+          "evaluations": 1,
+          "converged": null
+        },
+        {
+          "iterations": 0,
+          "evaluations": 1,
+          "converged": null
+        },
+        {
+          "iterations": 0,
+          "evaluations": 1,
+          "converged": null
+        }
+      ]
+    },
+    {
+      "n": 500,
+      "density": 0.01,
+      "algorithm": "sa-cluster-v1",
+      "samplesMs": [
+        628.2,
+        586.7,
+        590.5
+      ],
+      "medianMs": 590.5,
+      "maxMs": 628.2,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        }
+      ]
+    },
+    {
+      "n": 500,
+      "density": 0.01,
+      "algorithm": "sa-sequence-v1",
+      "samplesMs": [
+        370,
+        363.2,
+        373.7
+      ],
+      "medianMs": 370,
+      "maxMs": 373.7,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        }
+      ]
+    },
+    {
+      "n": 500,
+      "density": 0.1,
+      "algorithm": "sa-cluster-v1",
+      "samplesMs": [
+        638.5,
+        841.3,
+        535.4
+      ],
+      "medianMs": 638.5,
+      "maxMs": 841.3,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 100097,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100097,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100097,
+          "converged": null
+        }
+      ]
+    },
+    {
+      "n": 500,
+      "density": 0.1,
+      "algorithm": "sa-sequence-v1",
+      "samplesMs": [
+        304.7,
+        382.4,
+        382.6
+      ],
+      "medianMs": 382.4,
+      "maxMs": 382.6,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        }
+      ]
+    },
+    {
+      "n": 500,
+      "density": 1,
+      "algorithm": "sa-cluster-v1",
+      "samplesMs": [
+        658,
+        659.5,
+        593.5
+      ],
+      "medianMs": 658,
+      "maxMs": 659.5,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 100097,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100097,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100097,
+          "converged": null
+        }
+      ]
+    },
+    {
+      "n": 500,
+      "density": 1,
+      "algorithm": "sa-sequence-v1",
+      "samplesMs": [
+        375.8,
+        378.9,
+        376
+      ],
+      "medianMs": 376,
+      "maxMs": 378.9,
+      "statuses": [
+        "completed",
+        "completed",
+        "completed"
+      ],
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 100101,
+          "converged": null
+        }
+      ]
+    }
+  ]
+}

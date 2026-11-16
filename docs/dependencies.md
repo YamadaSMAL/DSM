@@ -150,3 +150,5 @@
 ブラウザ成果物に含むReact・React DOM・scheduler・Papa Parse・fflate・SheetJSのライセンス本文を `public/THIRD_PARTY_NOTICES.txt` に同梱する。その他は開発依存。依存の利用条件の記録であり、プロジェクト自体の配布ライセンスを決定するものではない。
 
 M3（v0.1.0）は追加の外部依存なし。HTML閲覧スクリプトはブラウザ標準APIのみで自己完結する。CIの外部Actionsはworkflow内の固定commit SHAで管理する。
+
+M4（v0.2.0）も外部依存の追加なし。mulberry32、差分評価、MCL、集計はアプリ内で固定実装する。

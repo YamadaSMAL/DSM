@@ -1,5 +1,6 @@
 import { permuteMatrix, preprocess } from '../domain';
-import { comparisonKey } from '../algorithms/registry';
+import { batchStatistics } from '../algorithms/statistics';
+import { comparisonKey, isRankable } from '../algorithms/registry';
 import { processViewMetrics } from '../algorithms/process';
 import { validateSession, type SessionData } from './session';
 export async function prepareExport(snapshot: SessionData) {
@@ -10,6 +11,6 @@ export async function prepareExport(snapshot: SessionData) {
   const view=selected.scc?processViewMetrics(matrices.directed,order,selected.scc):null;
   let currentMetrics: Record<string,number|null> = selected.metrics;
   if(view) { const {version:_version,orderGuaranteed:_guaranteed,...metrics}=view; currentMetrics=metrics; }
-  return {session,selected,order,analysis,reordered:permuteMatrix(analysis,order),currentMetrics,orderGuaranteed:view?.orderGuaranteed??true,comparisons:session.runs.map(run=>({run,comparable:comparisonKey(run)===comparisonKey(selected)}))};
+  return {session,selected,order,analysis,batches:batchStatistics(session.runs),reordered:permuteMatrix(analysis,order),currentMetrics,orderGuaranteed:view?.orderGuaranteed??true,comparisons:session.runs.map(run=>({run,comparable:isRankable(run)&&comparisonKey(run)===comparisonKey(selected)}))};
 }
 export type PreparedExport=Awaited<ReturnType<typeof prepareExport>>;
