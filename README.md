@@ -75,6 +75,6 @@ XLSXは実展開量100MiB・10,000エントリで中断する。SheetJSへは展
 | `docs/benchmarks.md` | 基準環境、実測と未検証事項 |
 | `docs/dependencies.md` | 固定版、取得元、ライセンス |
 
-M2の詳細・性能値は [M2検証記録](docs/M2-validation.md) と [benchmarks](docs/benchmarks.md)。追加の外部依存はない。M3の使い方・保存・公開設定は [v0.1手順書](docs/v0.1-guide.md)、検証は [M3検証記録](docs/M3-validation.md)。M4の操作と制限は [v0.2手順書](docs/v0.2-guide.md)、検証は [M4検証記録](docs/M4-validation.md)。次はM5の原典照合。
+M2の詳細・性能値は [M2検証記録](docs/M2-validation.md) と [benchmarks](docs/benchmarks.md)。追加の外部依存はない。M3の使い方・保存・公開設定は [v0.1手順書](docs/v0.1-guide.md)、検証は [M3検証記録](docs/M3-validation.md)。M4の操作と制限は [v0.2手順書](docs/v0.2-guide.md)、検証は [M4検証記録](docs/M4-validation.md)。M5は研究着手済み・未完了。名称・式・未確認操作は [IGTA原典照合表](docs/algorithms/igta-conformance.md)、数式の検証範囲と必要資料は [M5検証記録](docs/M5-validation.md)。研究ゲートを通過するまでIGTA系の公開手法は追加しない。
 
 入力情報はメモリのみで保持し、自動保存・外部送信しない。ページを再読込すると失われる。再開にはセッションJSONを保存し、入力ファイルから検証・再読込する。HTML/XLSXは閲覧・共有用。

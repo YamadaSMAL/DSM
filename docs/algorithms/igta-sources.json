@@ -1,0 +1,67 @@
+{
+  "checkedOn": "2026-11-17",
+  "timeZone": "Asia/Tokyo",
+  "status": "research-gate-not-passed",
+  "references": [
+    {
+      "id": "P12",
+      "doi": "10.1115/DETC2012-70076",
+      "metadataUrl": "https://research.aalto.fi/en/publications/improved-clustering-algorithm-for-design-structure-matrix/",
+      "access": "metadata; publisher final text not compared"
+    },
+    {
+      "id": "T12",
+      "url": "https://kth.diva-portal.org/smash/get/diva2%3A530891/FULLTEXT02.pdf",
+      "access": "web indexed text; local full PDF transfer timed out, diagrams not visually verified; no hash claimed for incomplete download"
+    },
+    {
+      "id": "P13",
+      "doi": "10.1115/DETC2013-12041",
+      "url": "https://www.researchgate.net/publication/267490581_Fast_Hybrid_Genetic_Clustering_Algorithm_for_Design_Structure_Matrix",
+      "access": "author metadata, abstract, figure captions only; full-text link retrieval failed"
+    },
+    {
+      "id": "W18",
+      "url": "https://www.designsociety.org/download-publication/40949/The%2Bhunt%2Bfor%2Bproper%2Brelation%2Bweights%2Bin%2Bproduct%2Barchitecture%2Bclustering",
+      "access": "text, section 3.1 PDF page 6; application evidence, not algorithm conformance"
+    },
+    {
+      "id": "C01",
+      "landingUrl": "https://dsmweb.org/matlab-macro-for-clustering-dsms/",
+      "url": "https://dsmweb.org/wp-content/uploads/2019/05/dsm_matlab.zip",
+      "access": "downloaded and inspected; MATLAB not executed; no IGTA+ implementation included"
+    },
+    {
+      "id": "T01",
+      "url": "https://dsmweb.org/wp-content/uploads/2019/05/msc_thebeau.pdf",
+      "access": "151-page PDF located; relevant body not verified"
+    }
+  ],
+  "referenceChecksums": [
+    {
+      "source": "C01",
+      "file": "dsm_matlab.zip",
+      "bytes": 26552,
+      "sha256": "f397b80694e24ea0dd409178db35a90ba29f7ad49c7ddac1cd420f4316788927"
+    },
+    {
+      "source": "C01",
+      "file": "thebeau/Cluster.m",
+      "bytes": 12208,
+      "sha256": "b110ed74cf167562950cc54981a406fb7a403b65568bf3935379f0937c674537"
+    },
+    {
+      "source": "C01",
+      "file": "thebeau/bid.m",
+      "bytes": 3331,
+      "sha256": "56d725670e6eba761e0350beeb8ef110372e89e97d142cf4f24921da8ca82b72"
+    },
+    {
+      "source": "C01",
+      "file": "thebeau/Coord_Cost.m",
+      "bytes": 6440,
+      "sha256": "500fc087be9e31c77a41c01b2b5f53a9e61d2395bb86b8fdb0026b1b3fd489a1"
+    }
+  ],
+  "redistributedReferenceFiles": false
+}
