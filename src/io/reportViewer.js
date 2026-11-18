@@ -26,7 +26,7 @@
     for(let r=firstR;r<lastR;r++)if(r%step===0)ctx.fillText(data.elements[order[r]].label.slice(0,11),3,MARGIN+r*cell-pan.y+12);
     for(let c=firstC;c<lastC;c++)if(c%step===0){ctx.save();ctx.translate(MARGIN+c*cell-pan.x+10,MARGIN-6);ctx.rotate(-Math.PI/2);ctx.fillText(data.elements[order[c]].label.slice(0,11),0,0);ctx.restore();}
     const {r,c}=pane.selected,i=order[r],j=order[c],a=data.elements[i],b=data.elements[j];
-    pane.detail.textContent=`行: ${a.label} (${a.id}) / 列: ${b.label} (${b.id}) / 値: ${values[r*N+c]} / 元値: ${data.original[i*N+j]} / 元順位: ${i+1},${j+1} / 表示順位: ${r+1},${c+1} / `+(pane.id==='result'&&data.kind==='structure'?'構造用の無向mean重み。':`${a.label} が ${b.label} に依存するセル（${b.label} → ${a.label}）。`)+(pane.id==='result'?` 所属: ${data.kind==='structure'?'構造C':'SCC'}${data.membership[i]+1},${data.membership[j]+1}`+(data.bands?` / Band: ${data.bands[i]},${data.bands[j]}`:''):'');
+    pane.detail.textContent=`行: ${a.label} (${a.id}) / 列: ${b.label} (${b.id}) / 値: ${values[r*N+c]} / 元値: ${data.original[i*N+j]} / 元順位: ${i+1},${j+1} / 表示順位: ${r+1},${c+1} / `+(pane.id==='result'&&data.kind==='structure'&&!data.directedProfile?'構造用の無向mean重み。':`${a.label} が ${b.label} に依存するセル（${b.label} → ${a.label}）。`)+(pane.id==='result'?` 所属: ${data.kind==='structure'?'構造C':'SCC'}${data.membership[i]+1},${data.membership[j]+1}`+(data.bands?` / Band: ${data.bands[i]},${data.bands[j]}`:''):'');
   }
   function render(){panes.forEach(p=>draw(p));}
   function reveal(pane,r,c){const cell=AREA/N*zoom;pane.selected={r,c};pane.pan={x:Math.max(0,Math.min(Math.max(pane.pan.x,(c+1)*cell-AREA),c*cell)),y:Math.max(0,Math.min(Math.max(pane.pan.y,(r+1)*cell-AREA),r*cell))};draw(pane);}

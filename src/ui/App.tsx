@@ -52,7 +52,7 @@ export function App() {
   const check = (key: 'labels' | 'symbols' | 'blanks' | 'diagonalBlanks' | 'cachedFormula' | 'reorderColumns', label: string) => <label><input type="checkbox" checked={options[key]} onChange={e => update(key, e.target.checked)} />{label}</label>;
   const matrix: MatrixData | null = active?.matrix ?? null;
   return <main>
-    <header><a className="brand" href="#main">DSM <span>解析</span></a><span className="badge">v0.3 · 制約・設計支援</span></header>
+    <header><a className="brand" href="#main">DSM <span>解析</span></a><span className="badge">v0.4 · 原典参照プロファイル</span></header>
     <section id="main" className="intro"><p className="eyebrow">構造と工程を、同じ行列から。</p><h1>依存を読み込み、<br />つながりを確かめる。</h1><p>CSV / XLSXをブラウザ内で検証・表示します。入力データは送信せず、この画面のメモリで保持します。</p></section>
     <section className="panel" aria-labelledby="import-title" onDragOver={e => e.preventDefault()} onDrop={e => { e.preventDefault(); const next = e.dataTransfer.files[0]; if (next) choose(next); }}>
       <h2 id="import-title">01 · ファイルを確認</h2><p>ファイルをここへドロップ、または選択してください。上限20MiB・500要素。対応: CSV / TSV / .xlsx / セッション.json（64MiBまで）（.xls・.xlsm・暗号化ブックは非対応）</p>

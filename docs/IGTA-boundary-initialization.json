@@ -1,0 +1,31 @@
+{
+  "browser": "157.0.8103.79",
+  "boundaries": [
+    {
+      "n": 128,
+      "slots": 64,
+      "populationSize": 72,
+      "generations": 0,
+      "trial": {
+        "iterations": 0,
+        "evaluations": 72,
+        "elapsedMs": 262.7,
+        "status": "completed",
+        "stopReason": "generation-budget"
+      }
+    },
+    {
+      "n": 500,
+      "slots": 16,
+      "populationSize": 72,
+      "generations": 0,
+      "trial": {
+        "iterations": 0,
+        "evaluations": 72,
+        "elapsedMs": 740.2,
+        "status": "completed",
+        "stopReason": "generation-budget"
+      }
+    }
+  ]
+}

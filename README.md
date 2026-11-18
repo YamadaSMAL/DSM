@@ -1,6 +1,6 @@
 # DSM解析Webアプリ
 
-[実装仕様書](SPECIFICATION.md)を正本とするブラウザ完結型アプリ。M0の計算基盤、M1の取込・検証・可視化、M2の最小解析・比較・手動順序ビュー、M3の出力・セッション復元、M4の焼きなまし・MCL・複数seed比較を実装済み。M6の汎用GA・制約・Tearingを追加したv0.3.0。M5のIGTA系は原典照合中で未提供。
+[実装仕様書](SPECIFICATION.md)を正本とするブラウザ完結型アプリ。M0の計算基盤、M1の取込・検証・可視化、M2の最小解析・比較・手動順序ビュー、M3の出力・セッション復元、M4の焼きなまし・MCL・複数seed比較を実装済み。M6の汎用GA・制約・Tearingを追加済み。M5のIGTA+／G-IGTA参照プロファイルを追加したv0.4.0。著者実装との一致確認は未実施。
 
 ## 起動と検証
 
@@ -50,7 +50,7 @@ DSM_BROWSER_EXECUTABLE='/Applications/Brave Browser.app/Contents/MacOS/Brave Bro
 
 - **M6**: 汎用GA、must-link／cannot-link・群数・最大規模制約、矛盾と探索不成功の区別、Tearing仮定提案・仮想Canvas・元指標との比較。取消・複数seed・保存復元にも対応。
 
-内部は「行が列に依存」、グラフは列→行。逆規約の入力は転置して記録する。元セル表・元A・解析用行列を分け、既存domain関数を共用して元データを変更しない。構造／工程のモードは同じ優先度。IGTA++はM5の研究ゲート通過後に追加する。
+内部は「行が列に依存」、グラフは列→行。逆規約の入力は転置して記録する。元セル表・元A・解析用行列を分け、既存domain関数を共用して元データを変更しない。構造／工程のモードは同じ優先度。IGTA系は原典由来と補完規則を分けた参照プロファイルを提供し、著者実装の完全再現とは表示しない。
 
 ## 対応上限と制限
 
@@ -77,6 +77,6 @@ XLSXは実展開量100MiB・10,000エントリで中断する。SheetJSへは展
 | `docs/benchmarks.md` | 基準環境、実測と未検証事項 |
 | `docs/dependencies.md` | 固定版、取得元、ライセンス |
 
-M2の詳細・性能値は [M2検証記録](docs/M2-validation.md) と [benchmarks](docs/benchmarks.md)。追加の外部依存はない。M3の使い方・保存・公開設定は [v0.1手順書](docs/v0.1-guide.md)、検証は [M3検証記録](docs/M3-validation.md)。M4の操作と制限は [v0.2手順書](docs/v0.2-guide.md)、検証は [M4検証記録](docs/M4-validation.md)。M6の操作と制限は [v0.3手順書](docs/v0.3-guide.md)、検証は [M6検証記録](docs/M6-validation.md)。M5は研究着手済み・未完了。名称・式・未確認操作は [IGTA原典照合表](docs/algorithms/igta-conformance.md)、数式の検証範囲と必要資料は [M5検証記録](docs/M5-validation.md)。研究ゲートを通過するまでIGTA系の公開手法は追加しない。
+M2の詳細・性能値は [M2検証記録](docs/M2-validation.md) と [benchmarks](docs/benchmarks.md)。追加の外部依存はない。M3の使い方・保存・公開設定は [v0.1手順書](docs/v0.1-guide.md)、検証は [M3検証記録](docs/M3-validation.md)。M4の操作と制限は [v0.2手順書](docs/v0.2-guide.md)、検証は [M4検証記録](docs/M4-validation.md)。M6の操作と制限は [v0.3手順書](docs/v0.3-guide.md)、検証は [M6検証記録](docs/M6-validation.md)。M5参照プロファイルの操作は [v0.4手順書](docs/v0.4-guide.md)。著者実装との照合は未実施。名称・式・未確認操作は [IGTA原典照合表](docs/algorithms/igta-conformance.md)、参照プロファイルの検証は [M5参照版検証記録](docs/M5-reference-validation.md)。研究着手時の履歴は [M5検証記録](docs/M5-validation.md)。参照プロファイルとして検証・公開し、未確認箇所を原典の既定値と称さない。
 
 入力情報はメモリのみで保持し、自動保存・外部送信しない。ページを再読込すると失われる。再開にはセッションJSONを保存し、入力ファイルから検証・再読込する。HTML/XLSXは閲覧・共有用。

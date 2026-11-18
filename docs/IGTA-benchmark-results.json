@@ -1,0 +1,776 @@
+{
+  "browser": "157.0.8103.79",
+  "inputSeed": 20261119,
+  "searchSeed": 20261119,
+  "repetitions": 3,
+  "results": [
+    {
+      "n": 100,
+      "density": 0,
+      "id": "igta-plus-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 100,
+          "evaluations": 1,
+          "elapsedMs": 4.6,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        },
+        {
+          "iterations": 100,
+          "evaluations": 1,
+          "elapsedMs": 4.3,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        },
+        {
+          "iterations": 100,
+          "evaluations": 1,
+          "elapsedMs": 4.4,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        }
+      ],
+      "medianMs": 4.4,
+      "maxMs": 4.6,
+      "maxProposals": 100000
+    },
+    {
+      "n": 100,
+      "density": 0,
+      "id": "igta-pp-gigta-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 183.3,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 180.3,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 183.3,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        }
+      ],
+      "medianMs": 183.3,
+      "maxMs": 183.3,
+      "slots": 14,
+      "populationSize": 36,
+      "generations": 36
+    },
+    {
+      "n": 100,
+      "density": 0.01,
+      "id": "igta-plus-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 389,
+          "evaluations": 154,
+          "elapsedMs": 6.5,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        },
+        {
+          "iterations": 389,
+          "evaluations": 154,
+          "elapsedMs": 6.5,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        },
+        {
+          "iterations": 389,
+          "evaluations": 154,
+          "elapsedMs": 6.2,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        }
+      ],
+      "medianMs": 6.5,
+      "maxMs": 6.5,
+      "maxProposals": 100000
+    },
+    {
+      "n": 100,
+      "density": 0.01,
+      "id": "igta-pp-gigta-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 247.2,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 251.1,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 248.9,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        }
+      ],
+      "medianMs": 248.9,
+      "maxMs": 251.1,
+      "slots": 14,
+      "populationSize": 36,
+      "generations": 36
+    },
+    {
+      "n": 100,
+      "density": 0.1,
+      "id": "igta-plus-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 3235,
+          "evaluations": 936,
+          "elapsedMs": 20.7,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        },
+        {
+          "iterations": 3235,
+          "evaluations": 936,
+          "elapsedMs": 21.5,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        },
+        {
+          "iterations": 3235,
+          "evaluations": 936,
+          "elapsedMs": 22.7,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        }
+      ],
+      "medianMs": 21.5,
+      "maxMs": 22.7,
+      "maxProposals": 100000
+    },
+    {
+      "n": 100,
+      "density": 0.1,
+      "id": "igta-pp-gigta-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 185.3,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 181.6,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 180.1,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        }
+      ],
+      "medianMs": 181.6,
+      "maxMs": 185.3,
+      "slots": 14,
+      "populationSize": 36,
+      "generations": 36
+    },
+    {
+      "n": 100,
+      "density": 1,
+      "id": "igta-plus-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 1421,
+          "evaluations": 678,
+          "elapsedMs": 38.1,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        },
+        {
+          "iterations": 1421,
+          "evaluations": 678,
+          "elapsedMs": 35.1,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        },
+        {
+          "iterations": 1421,
+          "evaluations": 678,
+          "elapsedMs": 35.8,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        }
+      ],
+      "medianMs": 35.8,
+      "maxMs": 38.1,
+      "maxProposals": 100000
+    },
+    {
+      "n": 100,
+      "density": 1,
+      "id": "igta-pp-gigta-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 102.6,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 102.4,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 103.7,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        }
+      ],
+      "medianMs": 102.6,
+      "maxMs": 103.7,
+      "slots": 14,
+      "populationSize": 36,
+      "generations": 36
+    },
+    {
+      "n": 200,
+      "density": 0,
+      "id": "igta-plus-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 200,
+          "evaluations": 1,
+          "elapsedMs": 9.3,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        },
+        {
+          "iterations": 200,
+          "evaluations": 1,
+          "elapsedMs": 10.1,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        },
+        {
+          "iterations": 200,
+          "evaluations": 1,
+          "elapsedMs": 9.4,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        }
+      ],
+      "medianMs": 9.4,
+      "maxMs": 10.1,
+      "maxProposals": 100000
+    },
+    {
+      "n": 200,
+      "density": 0,
+      "id": "igta-pp-gigta-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 580.3,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 593.4,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 593,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        }
+      ],
+      "medianMs": 593,
+      "maxMs": 593.4,
+      "slots": 14,
+      "populationSize": 36,
+      "generations": 36
+    },
+    {
+      "n": 200,
+      "density": 0.01,
+      "id": "igta-plus-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 15516,
+          "evaluations": 5614,
+          "elapsedMs": 132.8,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        },
+        {
+          "iterations": 15516,
+          "evaluations": 5614,
+          "elapsedMs": 129.6,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        },
+        {
+          "iterations": 15516,
+          "evaluations": 5614,
+          "elapsedMs": 128,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        }
+      ],
+      "medianMs": 129.6,
+      "maxMs": 132.8,
+      "maxProposals": 100000
+    },
+    {
+      "n": 200,
+      "density": 0.01,
+      "id": "igta-pp-gigta-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 827.1,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 826.9,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 838.1,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        }
+      ],
+      "medianMs": 827.1,
+      "maxMs": 838.1,
+      "slots": 14,
+      "populationSize": 36,
+      "generations": 36
+    },
+    {
+      "n": 200,
+      "density": 0.1,
+      "id": "igta-plus-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 8026,
+          "evaluations": 1935,
+          "elapsedMs": 141.3,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        },
+        {
+          "iterations": 8026,
+          "evaluations": 1935,
+          "elapsedMs": 141.6,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        },
+        {
+          "iterations": 8026,
+          "evaluations": 1935,
+          "elapsedMs": 142.3,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        }
+      ],
+      "medianMs": 141.6,
+      "maxMs": 142.3,
+      "maxProposals": 100000
+    },
+    {
+      "n": 200,
+      "density": 0.1,
+      "id": "igta-pp-gigta-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 523.3,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 542.1,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 518.1,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        }
+      ],
+      "medianMs": 523.3,
+      "maxMs": 542.1,
+      "slots": 14,
+      "populationSize": 36,
+      "generations": 36
+    },
+    {
+      "n": 200,
+      "density": 1,
+      "id": "igta-plus-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 51659,
+          "elapsedMs": 15482.9,
+          "status": "limit-reached",
+          "stopReason": "proposal-budget"
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 51659,
+          "elapsedMs": 15485.3,
+          "status": "limit-reached",
+          "stopReason": "proposal-budget"
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 51659,
+          "elapsedMs": 15476.5,
+          "status": "limit-reached",
+          "stopReason": "proposal-budget"
+        }
+      ],
+      "medianMs": 15482.9,
+      "maxMs": 15485.3,
+      "maxProposals": 100000
+    },
+    {
+      "n": 200,
+      "density": 1,
+      "id": "igta-pp-gigta-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 317.5,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 322.1,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 323.8,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        }
+      ],
+      "medianMs": 322.1,
+      "maxMs": 323.8,
+      "slots": 14,
+      "populationSize": 36,
+      "generations": 36
+    },
+    {
+      "n": 500,
+      "density": 0,
+      "id": "igta-plus-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 500,
+          "evaluations": 1,
+          "elapsedMs": 27.5,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        },
+        {
+          "iterations": 500,
+          "evaluations": 1,
+          "elapsedMs": 27.8,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        },
+        {
+          "iterations": 500,
+          "evaluations": 1,
+          "elapsedMs": 28.3,
+          "status": "completed",
+          "stopReason": "itc-exhausted"
+        }
+      ],
+      "medianMs": 27.8,
+      "maxMs": 28.3,
+      "maxProposals": 100000
+    },
+    {
+      "n": 500,
+      "density": 0,
+      "id": "igta-pp-gigta-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 2890.4,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 2803.3,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 2848.5,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        }
+      ],
+      "medianMs": 2848.5,
+      "maxMs": 2890.4,
+      "slots": 14,
+      "populationSize": 36,
+      "generations": 36
+    },
+    {
+      "n": 500,
+      "density": 0.01,
+      "id": "igta-plus-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 24955,
+          "elapsedMs": 2103.7,
+          "status": "limit-reached",
+          "stopReason": "proposal-budget"
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 24955,
+          "elapsedMs": 2105.7,
+          "status": "limit-reached",
+          "stopReason": "proposal-budget"
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 24955,
+          "elapsedMs": 2109.4,
+          "status": "limit-reached",
+          "stopReason": "proposal-budget"
+        }
+      ],
+      "medianMs": 2105.7,
+      "maxMs": 2109.4,
+      "maxProposals": 100000
+    },
+    {
+      "n": 500,
+      "density": 0.01,
+      "id": "igta-pp-gigta-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 3808.9,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 3730.5,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 3772,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        }
+      ],
+      "medianMs": 3772,
+      "maxMs": 3808.9,
+      "slots": 14,
+      "populationSize": 36,
+      "generations": 36
+    },
+    {
+      "n": 500,
+      "density": 0.1,
+      "id": "igta-plus-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 100000,
+          "evaluations": 14868,
+          "elapsedMs": 7138.2,
+          "status": "limit-reached",
+          "stopReason": "proposal-budget"
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 14868,
+          "elapsedMs": 7118.2,
+          "status": "limit-reached",
+          "stopReason": "proposal-budget"
+        },
+        {
+          "iterations": 100000,
+          "evaluations": 14868,
+          "elapsedMs": 7255.6,
+          "status": "limit-reached",
+          "stopReason": "proposal-budget"
+        }
+      ],
+      "medianMs": 7138.2,
+      "maxMs": 7255.6,
+      "maxProposals": 100000
+    },
+    {
+      "n": 500,
+      "density": 0.1,
+      "id": "igta-pp-gigta-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 2613.8,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 2688.1,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 2652.7,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        }
+      ],
+      "medianMs": 2652.7,
+      "maxMs": 2688.1,
+      "slots": 14,
+      "populationSize": 36,
+      "generations": 36
+    },
+    {
+      "n": 500,
+      "density": 1,
+      "id": "igta-plus-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 30874,
+          "evaluations": 15508,
+          "elapsedMs": 30006.4,
+          "status": "limit-reached",
+          "stopReason": "time-limit"
+        },
+        {
+          "iterations": 30862,
+          "evaluations": 15499,
+          "elapsedMs": 30011.3,
+          "status": "limit-reached",
+          "stopReason": "time-limit"
+        },
+        {
+          "iterations": 30741,
+          "evaluations": 15444,
+          "elapsedMs": 30010.5,
+          "status": "limit-reached",
+          "stopReason": "time-limit"
+        }
+      ],
+      "medianMs": 30010.5,
+      "maxMs": 30011.3,
+      "maxProposals": 100000
+    },
+    {
+      "n": 500,
+      "density": 1,
+      "id": "igta-pp-gigta-paper-informed-v1",
+      "trials": [
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 1493.1,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 1499.5,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        },
+        {
+          "iterations": 36,
+          "evaluations": 1332,
+          "elapsedMs": 1496.2,
+          "status": "completed",
+          "stopReason": "generation-budget"
+        }
+      ],
+      "medianMs": 1496.2,
+      "maxMs": 1499.5,
+      "slots": 14,
+      "populationSize": 36,
+      "generations": 36
+    }
+  ]
+}

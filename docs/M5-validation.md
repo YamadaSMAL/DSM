@@ -1,3 +1,9 @@
+# 現在の状態（2026-11-19）
+
+ユーザー提供仕様と§8.6の操作順に基づくIGTA+／G-IGTA参照プロファイルを実装。著者MATLABコードとの一致確認は未実施。現在の検証は [M5-reference-validation.md](M5-reference-validation.md)、原典と補完は [照合表](algorithms/igta-conformance.md)。以下は2026-11-17時点の履歴であり、全文未取得・機能未提供という当時の状態を現在へ適用しない。
+
+---
+
 # M5 研究着手・検証記録
 
 2026-11-17（日本時間）。**M5は未完了、研究ゲート未通過**。既存アプリ版v0.2.0。詳細は [原典照合表](algorithms/igta-conformance.md) と [出典・取得状態・ハッシュ](algorithms/igta-sources.json)。

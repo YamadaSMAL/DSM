@@ -1,3 +1,4 @@
+import { isIgtaProfile } from '../algorithms/igtaProfile';
 import { permuteMatrix, preprocess } from '../domain';
 import { batchStatistics } from '../algorithms/statistics';
 import { comparisonKey, isRankable } from '../algorithms/registry';
@@ -7,7 +8,7 @@ export async function prepareExport(snapshot: SessionData) {
   const session=await validateSession(snapshot), selected=session.runs.find(r=>r.runId===session.selectedRunId);
   if(!selected)throw new Error('HTML/XLSX出力は完了結果を選択してください。');
   const order=session.views[selected.runId]!.order, matrices=preprocess(session.input,selected.options);
-  const analysis=selected.mode==='structure'?matrices.symmetric:matrices.directed;
+  const analysis=selected.mode==='structure'&&!isIgtaProfile(selected.algorithm.id)?matrices.symmetric:matrices.directed;
   const view=selected.scc?processViewMetrics(matrices.directed,order,selected.scc):null;
   let currentMetrics: Record<string,number|null> = selected.metrics;
   if(view) { const {version:_version,orderGuaranteed:_guaranteed,...metrics}=view; currentMetrics=metrics; }

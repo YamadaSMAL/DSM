@@ -1,0 +1,16 @@
+[
+  {
+    "id": "igta-plus-paper-informed-v1",
+    "n": 500,
+    "cancellationMs": 185.42220799999996,
+    "iterations": 507,
+    "evaluations": 429
+  },
+  {
+    "id": "igta-pp-gigta-paper-informed-v1",
+    "n": 500,
+    "cancellationMs": 184.15541699999994,
+    "iterations": 0,
+    "evaluations": 12
+  }
+]

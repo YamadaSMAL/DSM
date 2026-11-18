@@ -55,8 +55,8 @@ describe('M5 research gate (not an algorithm implementation)', () => {
     expect(() => thebeauBids(fromRows([[0,1e100],[0,0]]), [0,1], 0)).toThrow();
     expect(() => igtaPlusTable3Cost(fromRows([[0,1e308],[1e308,0]]), [0,0])).toThrow();
   });
-  it('未検証のIGTA系を実行登録・公開しない', async () => {
-    expect(algorithms.filter(a => /igta/i.test(a.id))).toEqual([]);
+  it('著者実装の未検証IDを登録せず参照プロファイルを区別する', async () => {
+    expect(algorithms.filter(a => /igta/i.test(a.id) && !a.id.endsWith('paper-informed-v1'))).toEqual([]);
     const source = createMatrixData([[0]], { convention: 'row-depends-on-column', provenance });
     await expect(runAnalysis(source, 'igta-pp-paper-unverified', {})).rejects.toThrow('登録されていません');
   });

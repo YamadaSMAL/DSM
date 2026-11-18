@@ -1,3 +1,5 @@
+import { PLUS_ID,GIGTA_ID,isIgtaProfile } from './igtaProfile';
+import { runIgtaPlus,runGigita } from './igtaSearch';
 import { normalizeConstraints, CONSTRAINT_CAPABILITIES } from './constraints';
 import { runGenetic } from './genetic';
 import { proposeTearing } from './tearing';
@@ -28,6 +30,7 @@ export const algorithms: readonly AlgorithmPlugin[] = [
   {...common,id:'mcl-exclusive-v1',label:'MCL（アプリ独自の排他的抽出）',mode:'structure',baseline:false,limits:{maxN:200},validate:()=>[],async run(input,p,context){const {transition:_transition,...result}=await runMcl(input.matrices.symmetric,p.inflation,p.maxIterations,context);return result;}},
   {...common,id:'ga-cluster-v1',label:'汎用GA（IGTA系とは独立）',mode:'structure',baseline:false,capabilities:{seeded:true,constraints:CONSTRAINT_CAPABILITIES},validate:()=>[],run:(input,p,context)=>runGenetic(input.matrices.symmetric,p,p.seed!,context)},
   {...common,id:'tearing-greedy-v1',label:'Tearing（循環依存の仮定提案）',mode:'process',baseline:false,validate:()=>[],run:(input,p,context)=>proposeTearing(input.matrices.directed,p.maxTears!,context)},
+  ...[PLUS_ID,GIGTA_ID].map(id=>({...common,id,label:id===PLUS_ID?'IGTA+ 参照プロファイル':'G-IGTA（IGTA++）参照プロファイル',mode:'structure' as const,baseline:false,capabilities:{seeded:true,constraints:[]},validate:()=>[],run:(input:AnalysisInput,p:Parameters,context:ComputeContext)=>id===PLUS_ID?runIgtaPlus(input.matrices.directed,p,p.seed!,context):runGigita(input.matrices.directed,p,p.seed!,context)})),
   ...(['separate', 'single'] as const).map(kind => ({ ...common, id: `baseline-${kind}-v1`, label: kind === 'single' ? '比較基準: 全要素一クラスタ' : '比較基準: 全要素別クラスタ', mode: 'structure' as const, baseline: true,
     validate: () => [], async run(input: AnalysisInput) { return { order: identityOrder(input.source.n), membership: identityOrder(input.source.n).map(i => kind === 'single' ? 0 : i), iterations: 0, evaluations: 0 }; } })),
   { ...common, id: 'baseline-identity-v1', label: '比較基準: 入力順（Identity）', mode: 'process', baseline: true, validate: () => [], async run(input) { return { order: identityOrder(input.source.n), scc: partitionProcess(input.matrices.directed), iterations: 0, evaluations: 0 }; } },
@@ -47,25 +50,27 @@ export async function runAnalysis(source: MatrixData, algorithmId: string, param
   let metrics: Record<string, number | null>, metricVersions: Record<string, string>;
   if (plugin.mode === 'structure') {
     const { version, ...values } = structureMetrics(matrices.symmetric, solution.membership!, normalized.alpha); metrics = values; metricVersions = { structure: version };
-    warnings.push(algorithmId==='ga-cluster-v1'?'汎用GAです。IGTA系ではありません。制約を満たす最良解を保持しますが、大域最適を保証しません。':algorithmId==='sa-cluster-v1'?'有限予算の焼きなまし探索です。最良解を保持しますが、大域最適を保証しません。':algorithmId==='mcl-exclusive-v1'?'mcl-exclusive-v1はアプリ独自の排他的抽出とpruningを使います。公式mclコマンドとの一致を保証しません。':plugin.baseline ? '比較基準です。最適化手法ではありません。' : '平均連結は直接結合の類似度による分割です。調整コストの大域最適解を保証しません。');
+    if(solution.objective){metrics[solution.objective.name]=solution.objective.value;metricVersions['objective']=solution.objective.version;}
+    warnings.push(isIgtaProfile(algorithmId)?'原典の式・操作と明示した補完規則を使う参照プロファイルです。著者MATLABコードとの一致確認は未実施です。探索は非対称Dを保持し、共通指標C_coordはmean Sで別に評価します。':algorithmId==='ga-cluster-v1'?'汎用GAです。IGTA系ではありません。制約を満たす最良解を保持しますが、大域最適を保証しません。':algorithmId==='sa-cluster-v1'?'有限予算の焼きなまし探索です。最良解を保持しますが、大域最適を保証しません。':algorithmId==='mcl-exclusive-v1'?'mcl-exclusive-v1はアプリ独自の排他的抽出とpruningを使います。公式mclコマンドとの一致を保証しません。':plugin.baseline ? '比較基準です。最適化手法ではありません。' : '平均連結は直接結合の類似度による分割です。調整コストの大域最適解を保証しません。');
   } else {
     const { version, orderGuaranteed: _guarantee, ...values } = processViewMetrics(matrices.directed, solution.order, solution.scc!); metrics = values; metricVersions = { process: version };
     warnings.push(algorithmId==='tearing-greedy-v1'?'Tearingは元依存を変更しない仮定提案です。最小フィードバック辺集合や実際の仮定コストを保証しません。指標は元Dで、仮想指標は別記します。':algorithmId==='sa-sequence-v1'?'SCC間の先行順を固定し、SCC内部だけを焼きなましで探索しました。循環や大域最適性は保証しません。':'SCC内部は元index順です。循環は残り、ブロック内の順序最適化はM4です。Bandは資源制約を考慮した同時実行の保証ではありません。');
   }
   await context.checkpoint({ iterations: solution.iterations, evaluations: solution.evaluations, phase: '指標の評価完了' });
-  const finalStop=context.shouldStop?.();if(finalStop&&(algorithmId.startsWith('sa-')||algorithmId==='mcl-exclusive-v1'||algorithmId==='ga-cluster-v1'||algorithmId==='tearing-greedy-v1')){solution.status=finalStop==='cancelled'?'cancelled':'limit-reached';solution.stopReason=finalStop;}
+  const finalStop=context.shouldStop?.();if(finalStop&&(algorithmId.startsWith('sa-')||algorithmId==='mcl-exclusive-v1'||algorithmId==='ga-cluster-v1'||algorithmId==='tearing-greedy-v1'||isIgtaProfile(algorithmId))){solution.status=finalStop==='cancelled'?'cancelled':'limit-reached';solution.stopReason=finalStop;}
   if(solution.status&&solution.status!=='completed')warnings.push('暫定結果です。通常の成功結果ランキングから除外します。');
   if(solution.converged===false)warnings.push('MCLは未収束です。反復上限または中断時の排他的所属です。');
   return { ...solution, ...(solution.scc ? { sccMembership: solution.scc.membership, bandByElement: solution.scc.bandByElement } : {}), runId, inputHash, dataRevision: source.revision, mode: plugin.mode, algorithm: { id: plugin.id, version: plugin.version }, parameters: normalized, options: matrices.options, preprocessing: [...matrices.transformations], ...(plugin.capabilities.seeded?{seed:parameters.seed??0,prngVersion:PRNG_VERSION}:{}), status: solution.status??'completed', stopReason: solution.stopReason??'決定的手法の処理完了', metrics, metricVersions, elapsedMs: performance.now() - start, warnings };
 }
 /** k is an algorithm setting, not a common objective parameter; baselines remain comparable. */
-export function comparisonKey(run: RunResult): string { return JSON.stringify([run.inputHash, run.mode, run.metricVersions, run.mode === 'structure' ? run.parameters.alpha : null, run.parameters.constraints??'constraints:none',run.tearing?'tearing:proposal':'original']); }
+export function comparisonKey(run: RunResult): string { return JSON.stringify([run.inputHash, run.mode, run.metricVersions, run.mode === 'structure' ? run.parameters.alpha : null, run.parameters.constraints??'constraints:none',run.tearing?'tearing:proposal':'original',run.objective?[run.objective.version,run.objective.conditions]:null]); }
 export function compareResults(a: RunResult, b: RunResult): number {
   if (comparisonKey(a) !== comparisonKey(b)) throw new DomainError('INCOMPARABLE', '異なる解析条件は順位付けできません。');
   if(!isRankable(a)||!isRankable(b))throw new DomainError('PROVISIONAL','暫定・未収束結果は順位付けできません。');
-  return a.mode === 'structure' ? a.metrics['coordinationCost']! - b.metrics['coordinationCost']! : a.metrics['feedbackWeight']! - b.metrics['feedbackWeight']! || a.metrics['feedbackCount']! - b.metrics['feedbackCount']!;
+  return a.mode === 'structure' ? objectiveValue(a)-objectiveValue(b) : a.metrics['feedbackWeight']! - b.metrics['feedbackWeight']! || a.metrics['feedbackCount']! - b.metrics['feedbackCount']!;
 }
 
+export function objectiveValue(run:RunResult):number{return run.objective?.value??run.metrics[run.mode==='structure'?'coordinationCost':'feedbackWeight']!;}
 export function isRankable(run:RunResult):boolean{return run.status==='completed'&&run.converged!==false&&!run.tearing;}
 export function normalizeParameters(n:number,id:string,p:Parameters):Parameters{
   const plugin=algorithms.find(a=>a.id===id);if(!plugin)throw new DomainError('UNKNOWN_ALGORITHM','未知の手法です。');
@@ -90,5 +95,9 @@ export function normalizeParameters(n:number,id:string,p:Parameters):Parameters{
     for(const rate of [result.crossoverRate,result.mutationRate])if(!Number.isFinite(rate)||rate<0||rate>1)bad('GA確率は0〜1が必要です。');
   }
   if(id==='tearing-greedy-v1')result.maxTears=integer(p.maxTears,Math.min(10000,Math.max(1,n*(n-1))),1,Math.max(1,n*(n-1)));
+  if(isIgtaProfile(id)){
+    if(id===PLUS_ID){result.costExponent=p.costExponent??1;if(!Number.isFinite(result.costExponent)||result.costExponent<=0||result.costExponent>3)bad('参照版のコスト指数は0より大きく3以下です。');result.maxProposals=integer(p.maxProposals,100000,1,100000);result.secondBidDenominator=p.secondBidDenominator??10;result.acceptDenominator=p.acceptDenominator??10;for(const x of [result.secondBidDenominator,result.acceptDenominator])if(!Number.isFinite(x)||x<1||x>1e9)bad('確率の分母は1〜1e9の有限数です。');}
+    else{if(p.mutationRate!==undefined&&p.mutationRate!==.00125||p.crossoverRate!==undefined||p.eliteCount!==undefined||p.tournamentSize!==undefined)bad('参照版の変異率は0.00125固定です。汎用GAの交叉率・エリート・トーナメント設定は使いません。');if(p.clusterSlots===undefined)bad('群スロット上限c_maxを明示してください。');result.clusterSlots=integer(p.clusterSlots,1,1,n);if(result.clusterSlots*n>8192)bad('染色体長は8192ビットまでです。c_maxを明示的に変更してください。');result.populationSize=integer(p.populationSize,36,2,72);if(result.populationSize%2)bad('個体数Qは偶数です。');result.generations=integer(p.generations,36,0,200);result.maxEvaluations=integer(p.maxEvaluations,result.populationSize*(result.generations+1),result.populationSize,14472);result.packing=p.packing??'horizontal';if(!['horizontal','vertical'].includes(result.packing))bad('符号化方式が不正です。');result.mdlAlpha=p.mdlAlpha??.1096;result.mdlBeta=p.mdlBeta??.8071;if(!Number.isFinite(result.mdlAlpha)||!Number.isFinite(result.mdlBeta)||result.mdlAlpha<0||result.mdlBeta<0||result.mdlAlpha+result.mdlBeta>1)bad('MDL係数は非負、合計1以下です。');}
+  }
   return result;
 }
