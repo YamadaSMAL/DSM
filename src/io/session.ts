@@ -45,7 +45,7 @@ function settings(value: unknown, n: number): SessionSettings {
   if (!plugin) fail('未知の手法です。');
   const options = obj(raw['options']), parameters = obj(raw['parameters']), color = obj(raw['color']);
   const result: SessionSettings = { algorithmId, options: { threshold: finite(options['threshold']), binary: bool(options['binary']) }, parameters: {}, color: { log: bool(color['log']), alternative: bool(color['alternative']) } };
-  for(const [key,value]of Object.entries(parameters)){if(key==='initialization'){if(value!=='separate'&&value!=='hierarchical')fail('初期解設定が不正です。');}else if(typeof value!=='number'||!Number.isFinite(value))fail('パラメータの型が不正です。');}
+  for(const [key,value]of Object.entries(parameters)){if(key==='constraints'){if(!value||typeof value!=='object'||Array.isArray(value))fail('制約の型が不正です。');}else if(key==='initialization'){if(value!=='separate'&&value!=='hierarchical')fail('初期解設定が不正です。');}else if(typeof value!=='number'||!Number.isFinite(value))fail('パラメータの型が不正です。');}
   result.parameters=normalizeParameters(n,algorithmId,parameters as Parameters);
   if(plugin.capabilities.seeded){const seed=raw['seed']??0;assertSeed(seed as number);result.seed=seed as number;}else if(raw['seed']!==undefined)fail('決定的設定にseedは不要です。');
 
@@ -95,15 +95,16 @@ export async function validateSession(value: unknown): Promise<SessionData> {
     const trace=r['trace']!==undefined?obj(r['trace']):{};
     if(condition.parameters.maxProposals!==undefined&&(iterations>condition.parameters.maxProposals||evaluations>condition.parameters.maxEvaluations!))fail('探索予算を超えています。');
     if(condition.parameters.maxIterations!==undefined&&iterations>condition.parameters.maxIterations)fail('反復上限を超えています。');
-    if(status!=='completed'&&!['sa-cluster-v1','sa-sequence-v1','mcl-exclusive-v1'].includes(algorithmId))fail('暫定解に未対応の手法です。');
-    const context=interrupted?{checkpoint:async()=>{},replay:{iterations,evaluations,...(trace['calibrationAttempts']!==undefined?{calibrationAttempts:integer(trace['calibrationAttempts'],0,10000)}:{}),status:status as 'cancelled'|'limit-reached',stopReason}}:undefined;
+    if(status!=='completed'&&!['sa-cluster-v1','sa-sequence-v1','mcl-exclusive-v1','ga-cluster-v1','tearing-greedy-v1'].includes(algorithmId))fail('暫定解に未対応の手法です。');
+    const context=interrupted?{checkpoint:async()=>{},replay:{iterations,evaluations,...(trace['offspringInGeneration']!==undefined?{offspring:integer(trace['offspringInGeneration'],0,100)}:{}),...(trace['calibrationAttempts']!==undefined?{calibrationAttempts:integer(trace['calibrationAttempts'],0,10000)}:{}),status:status as 'cancelled'|'limit-reached',stopReason}}:undefined;
+    if(condition.parameters.generations!==undefined&&iterations>condition.parameters.generations||condition.parameters.maxTears!==undefined&&iterations>condition.parameters.maxTears)fail('探索上限を超えています。');
     const fresh=await runAnalysis(input,algorithmId,{...condition.parameters,...(plugin.capabilities.seeded?{seed:r['seed'] as number}:{})},condition.options,runId,context,cache);
 
-    for(const key of ['inputHash','mode','parameters','options','order','membership','sccMembership','bandByElement','scc','hierarchy','preprocessing','metricVersions','warnings','stopReason','status','seed','prngVersion','converged','initialState','trace'] as const) equal(r[key],fresh[key],key);
+    for(const key of ['inputHash','mode','parameters','options','order','membership','sccMembership','bandByElement','scc','hierarchy','preprocessing','metricVersions','warnings','stopReason','status','seed','prngVersion','converged','initialState','trace','tearing'] as const) equal(r[key],fresh[key],key);
     const actualMetrics=obj(r['metrics']);
     if (Object.keys(actualMetrics).length!==Object.keys(fresh.metrics).length) fail('指標の件数が不正です。');
     for(const [key,expected] of Object.entries(fresh.metrics)) { const actual=actualMetrics[key]; if(expected===null ? actual!==null : typeof actual!=='number' || !Number.isFinite(actual) || Math.abs(actual-expected)>1e-9*Math.max(1,Math.abs(actual),Math.abs(expected))) fail(`指標${key}が一致しません。`); }
-    if(algorithmId.startsWith('sa-')||algorithmId==='mcl-exclusive-v1'){equal(iterations,fresh.iterations,'反復回数');equal(evaluations,fresh.evaluations,'評価回数');}
+    if(algorithmId.startsWith('sa-')||algorithmId==='mcl-exclusive-v1'||algorithmId==='ga-cluster-v1'||algorithmId==='tearing-greedy-v1'){equal(iterations,fresh.iterations,'反復回数');equal(evaluations,fresh.evaluations,'評価回数');}
     let batch:RunResult['batch'];if(r['batch']!==undefined){const b=obj(r['batch']),id=string(b['id'],100),rootSeed=integer(b['rootSeed'],0,0xffffffff),count=integer(b['count'],1,100),index=integer(b['index'],0,count-1);if(!plugin.capabilities.seeded||!/^[a-zA-Z0-9_-]+$/.test(id)||deriveSeeds(rootSeed,count)[index]!==fresh.seed)fail('複数seedの情報が不正です。');if(b['seeds']!==undefined)equal(b['seeds'],deriveSeeds(rootSeed,count),'全試行seed');batch={id,rootSeed,index,count,...(b['seeds']!==undefined?{seeds:deriveSeeds(rootSeed,count)}:{})};}
     runs.push({...fresh,...(batch?{batch}:{}),elapsedMs:finite(r['elapsedMs']),iterations:integer(r['iterations'],0,Number.MAX_SAFE_INTEGER),evaluations:integer(r['evaluations'],0,Number.MAX_SAFE_INTEGER),stopReason:string(r['stopReason']),warnings:array(r['warnings'],100).map(v=>string(v,10000)),...(r['cacheHit']!==undefined?{cacheHit:bool(r['cacheHit'])}:{}),...(r['environment']!==undefined?{environment:metadata(r['environment'])}:{})});
   }

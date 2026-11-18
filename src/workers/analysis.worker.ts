@@ -8,7 +8,7 @@ let cancelled = '';
 scope.onmessage = async ({ data }) => {
   if (data.type === 'cancel') { cancelled = data.runId; return; }
   const { runId, dataRevision } = data;
-  const search=['sa-cluster-v1','sa-sequence-v1','mcl-exclusive-v1'].includes(data.algorithmId);let stopped:'cancelled'|'time-limit'|undefined;
+  const search=['sa-cluster-v1','sa-sequence-v1','mcl-exclusive-v1','ga-cluster-v1','tearing-greedy-v1'].includes(data.algorithmId);let stopped:'cancelled'|'time-limit'|undefined;
   const start = performance.now(); let lastYield = start, lastProgress = -Infinity;
   try {
     const result = await runAnalysis(data.source, data.algorithmId, data.parameters, data.options, runId, {

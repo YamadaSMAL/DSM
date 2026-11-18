@@ -152,3 +152,5 @@
 M3（v0.1.0）は追加の外部依存なし。HTML閲覧スクリプトはブラウザ標準APIのみで自己完結する。CIの外部Actionsはworkflow内の固定commit SHAで管理する。
 
 M4（v0.2.0）も外部依存の追加なし。mulberry32、差分評価、MCL、集計はアプリ内で固定実装する。
+
+M6（2026-11-18）は追加の外部依存なし。GA・制約・Tearingは既存domain・PRNG・Worker基盤を共用する。M5原典のコード・PDFは配布物へ含めない。

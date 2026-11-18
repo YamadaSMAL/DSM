@@ -80,7 +80,7 @@ describe('平均連結', () => {
 describe('実行契約と比較', () => {
   it('登録手法全てを実行し、基準を最適化手法と区別する', async () => {
     for (const plugin of algorithms) { const result=await runAnalysis(source([[0,0],[1,0]]),plugin.id,{}); expect(result.status).toBe('completed'); expect(result.inputHash).toMatch(/^[a-f0-9]{64}$/); expect(result.metricVersions).not.toEqual({}); }
-    expect(algorithms.filter(a=>!a.baseline).map(a=>a.id).sort()).toEqual(['hierarchical-average-v1','mcl-exclusive-v1','sa-cluster-v1','sa-sequence-v1','scc-tarjan-kahn-v1']);
+    expect(algorithms.filter(a=>!a.baseline).map(a=>a.id).sort()).toEqual(['ga-cluster-v1','hierarchical-average-v1','mcl-exclusive-v1','sa-cluster-v1','sa-sequence-v1','scc-tarjan-kahn-v1','tearing-greedy-v1']);
   });
   it('k変更で併合履歴を再利用し、α変更も再評価する', async () => {
     const cache=new Map(), a=source(fixtures[6]!.rows);

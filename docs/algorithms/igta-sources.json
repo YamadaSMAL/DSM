@@ -63,5 +63,12 @@
       "sha256": "500fc087be9e31c77a41c01b2b5f53a9e61d2395bb86b8fdb0026b1b3fd489a1"
     }
   ],
-  "redistributedReferenceFiles": false
+  "redistributedReferenceFiles": false,
+  "followupChecks": [
+    {
+      "checkedOn": "2026-11-18",
+      "source": "P13",
+      "scope": "Web search reached author abstract and captions again; no additional full text or operation specification obtained; research gate unchanged"
+    }
+  ]
 }

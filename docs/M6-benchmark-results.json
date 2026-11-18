@@ -1,0 +1,729 @@
+{
+  "browser": "157.0.8103.79",
+  "inputSeed": 20261118,
+  "searchSeed": 20261118,
+  "repetitions": 3,
+  "note": "既定条件。GA50個体200世代、Tearing最大10000辺（n*(n-1)以下）。Worker内時間、転送・描画を除外。",
+  "results": [
+    {
+      "n": 100,
+      "density": 0,
+      "algorithm": "ga-cluster-v1",
+      "trials": [
+        {
+          "elapsedMs": 245,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 256.3,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 247.4,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        }
+      ],
+      "medianMs": 247.4,
+      "maxMs": 256.3
+    },
+    {
+      "n": 100,
+      "density": 0,
+      "algorithm": "tearing-greedy-v1",
+      "trials": [
+        {
+          "elapsedMs": 3.9,
+          "iterations": 0,
+          "evaluations": 1,
+          "status": "completed",
+          "acyclic": true
+        },
+        {
+          "elapsedMs": 4.3,
+          "iterations": 0,
+          "evaluations": 1,
+          "status": "completed",
+          "acyclic": true
+        },
+        {
+          "elapsedMs": 4.6,
+          "iterations": 0,
+          "evaluations": 1,
+          "status": "completed",
+          "acyclic": true
+        }
+      ],
+      "medianMs": 4.3,
+      "maxMs": 4.6
+    },
+    {
+      "n": 100,
+      "density": 0.01,
+      "algorithm": "ga-cluster-v1",
+      "trials": [
+        {
+          "elapsedMs": 171.8,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 178.6,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 172.9,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        }
+      ],
+      "medianMs": 172.9,
+      "maxMs": 178.6
+    },
+    {
+      "n": 100,
+      "density": 0.01,
+      "algorithm": "tearing-greedy-v1",
+      "trials": [
+        {
+          "elapsedMs": 5.8,
+          "iterations": 2,
+          "evaluations": 3,
+          "status": "completed",
+          "acyclic": true
+        },
+        {
+          "elapsedMs": 5.3,
+          "iterations": 2,
+          "evaluations": 3,
+          "status": "completed",
+          "acyclic": true
+        },
+        {
+          "elapsedMs": 5.3,
+          "iterations": 2,
+          "evaluations": 3,
+          "status": "completed",
+          "acyclic": true
+        }
+      ],
+      "medianMs": 5.3,
+      "maxMs": 5.8
+    },
+    {
+      "n": 100,
+      "density": 0.1,
+      "algorithm": "ga-cluster-v1",
+      "trials": [
+        {
+          "elapsedMs": 257.9,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 257.1,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 261.6,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        }
+      ],
+      "medianMs": 257.9,
+      "maxMs": 261.6
+    },
+    {
+      "n": 100,
+      "density": 0.1,
+      "algorithm": "tearing-greedy-v1",
+      "trials": [
+        {
+          "elapsedMs": 106,
+          "iterations": 507,
+          "evaluations": 508,
+          "status": "completed",
+          "acyclic": true
+        },
+        {
+          "elapsedMs": 66,
+          "iterations": 507,
+          "evaluations": 508,
+          "status": "completed",
+          "acyclic": true
+        },
+        {
+          "elapsedMs": 62,
+          "iterations": 507,
+          "evaluations": 508,
+          "status": "completed",
+          "acyclic": true
+        }
+      ],
+      "medianMs": 66,
+      "maxMs": 106
+    },
+    {
+      "n": 100,
+      "density": 1,
+      "algorithm": "ga-cluster-v1",
+      "trials": [
+        {
+          "elapsedMs": 783.8,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 851.6,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 827.5,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        }
+      ],
+      "medianMs": 827.5,
+      "maxMs": 851.6
+    },
+    {
+      "n": 100,
+      "density": 1,
+      "algorithm": "tearing-greedy-v1",
+      "trials": [
+        {
+          "elapsedMs": 1211,
+          "iterations": 4950,
+          "evaluations": 4951,
+          "status": "completed",
+          "acyclic": true
+        },
+        {
+          "elapsedMs": 1215,
+          "iterations": 4950,
+          "evaluations": 4951,
+          "status": "completed",
+          "acyclic": true
+        },
+        {
+          "elapsedMs": 1143.2,
+          "iterations": 4950,
+          "evaluations": 4951,
+          "status": "completed",
+          "acyclic": true
+        }
+      ],
+      "medianMs": 1211,
+      "maxMs": 1215
+    },
+    {
+      "n": 200,
+      "density": 0,
+      "algorithm": "ga-cluster-v1",
+      "trials": [
+        {
+          "elapsedMs": 537,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 521.4,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 507.9,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        }
+      ],
+      "medianMs": 521.4,
+      "maxMs": 537
+    },
+    {
+      "n": 200,
+      "density": 0,
+      "algorithm": "tearing-greedy-v1",
+      "trials": [
+        {
+          "elapsedMs": 9.5,
+          "iterations": 0,
+          "evaluations": 1,
+          "status": "completed",
+          "acyclic": true
+        },
+        {
+          "elapsedMs": 9.6,
+          "iterations": 0,
+          "evaluations": 1,
+          "status": "completed",
+          "acyclic": true
+        },
+        {
+          "elapsedMs": 9.3,
+          "iterations": 0,
+          "evaluations": 1,
+          "status": "completed",
+          "acyclic": true
+        }
+      ],
+      "medianMs": 9.5,
+      "maxMs": 9.6
+    },
+    {
+      "n": 200,
+      "density": 0.01,
+      "algorithm": "ga-cluster-v1",
+      "trials": [
+        {
+          "elapsedMs": 350.2,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 360.4,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 365.6,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        }
+      ],
+      "medianMs": 360.4,
+      "maxMs": 365.6
+    },
+    {
+      "n": 200,
+      "density": 0.01,
+      "algorithm": "tearing-greedy-v1",
+      "trials": [
+        {
+          "elapsedMs": 36.8,
+          "iterations": 47,
+          "evaluations": 48,
+          "status": "completed",
+          "acyclic": true
+        },
+        {
+          "elapsedMs": 38.5,
+          "iterations": 47,
+          "evaluations": 48,
+          "status": "completed",
+          "acyclic": true
+        },
+        {
+          "elapsedMs": 38.2,
+          "iterations": 47,
+          "evaluations": 48,
+          "status": "completed",
+          "acyclic": true
+        }
+      ],
+      "medianMs": 38.2,
+      "maxMs": 38.5
+    },
+    {
+      "n": 200,
+      "density": 0.1,
+      "algorithm": "ga-cluster-v1",
+      "trials": [
+        {
+          "elapsedMs": 786.3,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 777.6,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 780.6,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        }
+      ],
+      "medianMs": 780.6,
+      "maxMs": 786.3
+    },
+    {
+      "n": 200,
+      "density": 0.1,
+      "algorithm": "tearing-greedy-v1",
+      "trials": [
+        {
+          "elapsedMs": 960.5,
+          "iterations": 1999,
+          "evaluations": 2000,
+          "status": "completed",
+          "acyclic": true
+        },
+        {
+          "elapsedMs": 956.5,
+          "iterations": 1999,
+          "evaluations": 2000,
+          "status": "completed",
+          "acyclic": true
+        },
+        {
+          "elapsedMs": 984.9,
+          "iterations": 1999,
+          "evaluations": 2000,
+          "status": "completed",
+          "acyclic": true
+        }
+      ],
+      "medianMs": 960.5,
+      "maxMs": 984.9
+    },
+    {
+      "n": 200,
+      "density": 1,
+      "algorithm": "ga-cluster-v1",
+      "trials": [
+        {
+          "elapsedMs": 2875.1,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 2871.5,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 2879.9,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        }
+      ],
+      "medianMs": 2875.1,
+      "maxMs": 2879.9
+    },
+    {
+      "n": 200,
+      "density": 1,
+      "algorithm": "tearing-greedy-v1",
+      "trials": [
+        {
+          "elapsedMs": 8230.2,
+          "iterations": 10000,
+          "evaluations": 10001,
+          "status": "limit-reached",
+          "acyclic": false
+        },
+        {
+          "elapsedMs": 8591,
+          "iterations": 10000,
+          "evaluations": 10001,
+          "status": "limit-reached",
+          "acyclic": false
+        },
+        {
+          "elapsedMs": 8241.1,
+          "iterations": 10000,
+          "evaluations": 10001,
+          "status": "limit-reached",
+          "acyclic": false
+        }
+      ],
+      "medianMs": 8241.1,
+      "maxMs": 8591
+    },
+    {
+      "n": 500,
+      "density": 0,
+      "algorithm": "ga-cluster-v1",
+      "trials": [
+        {
+          "elapsedMs": 1255.4,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 1246.9,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 1231.6,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        }
+      ],
+      "medianMs": 1246.9,
+      "maxMs": 1255.4
+    },
+    {
+      "n": 500,
+      "density": 0,
+      "algorithm": "tearing-greedy-v1",
+      "trials": [
+        {
+          "elapsedMs": 26,
+          "iterations": 0,
+          "evaluations": 1,
+          "status": "completed",
+          "acyclic": true
+        },
+        {
+          "elapsedMs": 26.5,
+          "iterations": 0,
+          "evaluations": 1,
+          "status": "completed",
+          "acyclic": true
+        },
+        {
+          "elapsedMs": 26.9,
+          "iterations": 0,
+          "evaluations": 1,
+          "status": "completed",
+          "acyclic": true
+        }
+      ],
+      "medianMs": 26.5,
+      "maxMs": 26.9
+    },
+    {
+      "n": 500,
+      "density": 0.01,
+      "algorithm": "ga-cluster-v1",
+      "trials": [
+        {
+          "elapsedMs": 1187.1,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 1178.9,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 1152.5,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        }
+      ],
+      "medianMs": 1178.9,
+      "maxMs": 1187.1
+    },
+    {
+      "n": 500,
+      "density": 0.01,
+      "algorithm": "tearing-greedy-v1",
+      "trials": [
+        {
+          "elapsedMs": 2566.5,
+          "iterations": 973,
+          "evaluations": 974,
+          "status": "completed",
+          "acyclic": true
+        },
+        {
+          "elapsedMs": 2455.2,
+          "iterations": 973,
+          "evaluations": 974,
+          "status": "completed",
+          "acyclic": true
+        },
+        {
+          "elapsedMs": 2216.7,
+          "iterations": 973,
+          "evaluations": 974,
+          "status": "completed",
+          "acyclic": true
+        }
+      ],
+      "medianMs": 2455.2,
+      "maxMs": 2566.5
+    },
+    {
+      "n": 500,
+      "density": 0.1,
+      "algorithm": "ga-cluster-v1",
+      "trials": [
+        {
+          "elapsedMs": 3444.4,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 3443,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 3407.6,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        }
+      ],
+      "medianMs": 3443,
+      "maxMs": 3444.4
+    },
+    {
+      "n": 500,
+      "density": 0.1,
+      "algorithm": "tearing-greedy-v1",
+      "trials": [
+        {
+          "elapsedMs": 28531.9,
+          "iterations": 10000,
+          "evaluations": 10001,
+          "status": "limit-reached",
+          "acyclic": false
+        },
+        {
+          "elapsedMs": 29028.4,
+          "iterations": 10000,
+          "evaluations": 10001,
+          "status": "limit-reached",
+          "acyclic": false
+        },
+        {
+          "elapsedMs": 28592.6,
+          "iterations": 10000,
+          "evaluations": 10001,
+          "status": "limit-reached",
+          "acyclic": false
+        }
+      ],
+      "medianMs": 28592.6,
+      "maxMs": 29028.4
+    },
+    {
+      "n": 500,
+      "density": 1,
+      "algorithm": "ga-cluster-v1",
+      "trials": [
+        {
+          "elapsedMs": 17105.4,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 17067.9,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        },
+        {
+          "elapsedMs": 17151.2,
+          "iterations": 200,
+          "evaluations": 9650,
+          "status": "completed",
+          "acyclic": null
+        }
+      ],
+      "medianMs": 17105.4,
+      "maxMs": 17151.2
+    },
+    {
+      "n": 500,
+      "density": 1,
+      "algorithm": "tearing-greedy-v1",
+      "trials": [
+        {
+          "elapsedMs": 30010.6,
+          "iterations": 6017,
+          "evaluations": 6018,
+          "status": "limit-reached",
+          "acyclic": false
+        },
+        {
+          "elapsedMs": 30010.2,
+          "iterations": 6183,
+          "evaluations": 6184,
+          "status": "limit-reached",
+          "acyclic": false
+        },
+        {
+          "elapsedMs": 30010,
+          "iterations": 6124,
+          "evaluations": 6125,
+          "status": "limit-reached",
+          "acyclic": false
+        }
+      ],
+      "medianMs": 30010.2,
+      "maxMs": 30010.6
+    }
+  ]
+}

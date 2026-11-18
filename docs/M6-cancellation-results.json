@@ -1,0 +1,10 @@
+{
+  "browser": "157.0.8103.79",
+  "n": 500,
+  "density": 0.1,
+  "inputSeed": 20261118,
+  "cancellationMs": 229.58608300000014,
+  "note": "GA既定50個体200世代、1seed、単回。取消は500世代100個体へ変更。",
+  "runSummary": "選択結果 · 構造クラスタ\nこの結果の条件を設定へ\n\nga-cluster-v1 / 1.0.0 · revision 1 · completed / generation-budget\nseed=20261116 / PRNG=mulberry32-v1 / 収束=未定義\nτ=0 / 二値化=false / {\"alpha\":1,\"populationSize\":50,\"generations\":200,\"tournamentSize\":3,\"eliteCount\":2,\"crossoverRate\":0.8,\"mutationRate\":0.002}\n反復=200 / 評価=9650 / 経過=3418.9ms",
+  "inputHash": "ea42723623f817cdc42a832e565169614e86285dc4950250fdb605fc4902d731"
+}

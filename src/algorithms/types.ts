@@ -1,9 +1,12 @@
 import type { AnalysisMatrices, AnalysisMode, MatrixData, Transformation } from '../domain';
 import type { ComputeContext, Hierarchy } from './hierarchical';
+import type { ClusterConstraints } from './constraints';
+import type { ProcessMetrics } from '../domain';
 import type { SccResult } from './process';
-export interface Parameters { k?: number; alpha?: number;seed?:number;maxProposals?:number;maxEvaluations?:number;coolingInterval?:number;coolingRate?:number;temperatureFloor?:number;temperatureSamples?:number;initialization?:'separate'|'hierarchical';inflation?:number;maxIterations?:number;pruneThreshold?:number;convergenceTolerance?:number;stableIterations?:number }
+export interface TearingProposal { edges: {from:number;to:number;weight:number}[]; totalWeight:number;virtualOrder:number[];virtualMetrics:ProcessMetrics;acyclic:boolean }
+export interface Parameters { constraints?:ClusterConstraints;populationSize?:number;generations?:number;tournamentSize?:number;eliteCount?:number;crossoverRate?:number;mutationRate?:number;maxTears?:number; k?: number; alpha?: number;seed?:number;maxProposals?:number;maxEvaluations?:number;coolingInterval?:number;coolingRate?:number;temperatureFloor?:number;temperatureSamples?:number;initialization?:'separate'|'hierarchical';inflation?:number;maxIterations?:number;pruneThreshold?:number;convergenceTolerance?:number;stableIterations?:number }
 export interface AnalysisInput { source: MatrixData; matrices: AnalysisMatrices; inputHash: string }
-export interface Solution { order: number[]; membership?: number[]; sccMembership?: number[]; bandByElement?: number[]; scc?: SccResult; hierarchy?: Hierarchy; cacheHit?: boolean; iterations: number; evaluations: number;status?:'completed'|'limit-reached'|'cancelled';stopReason?:string;converged?:boolean;initialState?:{order:number[];membership?:number[]};trace?:Record<string,number> }
+export interface Solution { tearing?:TearingProposal; order: number[]; membership?: number[]; sccMembership?: number[]; bandByElement?: number[]; scc?: SccResult; hierarchy?: Hierarchy; cacheHit?: boolean; iterations: number; evaluations: number;status?:'completed'|'limit-reached'|'cancelled';stopReason?:string;converged?:boolean;initialState?:{order:number[];membership?:number[]};trace?:Record<string,number> }
 export interface AlgorithmPlugin {
   id: string; version: string; label: string; mode: AnalysisMode; baseline: boolean;
   limits: { maxN: number }; capabilities: { seeded: boolean; constraints: string[] };

@@ -1,7 +1,7 @@
 {
   "name": "dsm-analysis",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "engines": {
     "node": ">=26.0.0 <27"
