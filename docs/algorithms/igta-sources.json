@@ -74,7 +74,7 @@
   "localProfile": {
     "file": "IGTA_ALGORITHM_SPEC.md",
     "version": "1.0",
-    "sha256": "554e150c81ecc806b7f3f144fee5c509a83b2e71f12c70f2fb3d4bfe4d4b92fe",
+    "sha256": "8697421431d7892f05d9d39b1d5792e15667b13aef2fcfda41e1caf4f2f6b0a3",
     "executionOrder": "8.6: crossover, child1 mutate/legalize/evaluate/archive, child2 mutate/legalize/evaluate/archive",
     "authorCodeAgreementVerified": false
   },
