@@ -105,7 +105,8 @@ export function AnalysisWorkspace({ matrix, source, restored, tab = 'analysis', 
         setRuns(previous=>[...previous,saved]);setViews(previous=>({...previous,[saved.runId]:initialView(saved.order)}));if(recorded===0)setSelectedId(saved.runId);recorded++;if(result.status!=='completed'||result.converged===false)provisional++;
         if(result.status==='cancelled'){cancelBatch.current=true;break;}
       }
-      if(token===generation.current)if(recorded>0)onTab?.('results');setStatus(cancelBatch.current?`cancelled · ${recorded}/${seeds.length}結果を保持しました。`:provisional?`limit-reached · ${recorded}結果を保存（${provisional}件は暫定・未収束）`:`completed · ${recorded}結果の実行終了`);
+      // 取消時は解析タブに留まる（結果タブの大きな行列の再描画で取消の反映を遅らせない）。結果は保持され、結果タブから参照できる。
+      if(token===generation.current&&recorded>0&&!cancelBatch.current)onTab?.('results');setStatus(cancelBatch.current?`cancelled · ${recorded}/${seeds.length}結果を保持しました。`:provisional?`limit-reached · ${recorded}結果を保存（${provisional}件は暫定・未収束）`:`completed · ${recorded}結果の実行終了`);
     }catch(error){if(token===generation.current)setStatus(`${error instanceof AnalysisStopped?error.status:'failed'} · ${error instanceof Error?error.message:String(error)} / ${recorded}結果を保持`);}
     finally{if(token===generation.current)setBusy(false);}
   }

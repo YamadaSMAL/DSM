@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { reveal } from './tabs';
+import { perfBudget } from './budget';
 import fs from 'node:fs';
 const source = async (page: Page, text: string) => {
   await page.goto('/'); await reveal(page.getByLabel('入力ファイル',{exact:true}));await page.getByLabel('入力ファイル',{exact:true}).setInputFiles({name:'analysis.csv',mimeType:'text/csv',buffer:Buffer.from(text)});
@@ -67,5 +68,5 @@ test('500要素の両解析をWorker内で3回計測する',async({page,browser}
     }
   }
   fs.writeFileSync('test-results/M2-benchmarks.json',JSON.stringify({browser:browser.version(),seed:20261116,repetitions:3,note:'本番WorkerのrunAnalysis内部経過時間。前処理・ハッシュ・指標を含み、転送・描画は除外。キャッシュなし。',results},null,2));
-  for(const row of results.filter(r=>r.n===500))expect(row.maxMs).toBeLessThan(row.algorithm==='hierarchical-average-v1'?15000:2000);
+  for(const row of results.filter(r=>r.n===500))expect(row.maxMs).toBeLessThan(perfBudget(row.algorithm==='hierarchical-average-v1'?15000:2000));
 });

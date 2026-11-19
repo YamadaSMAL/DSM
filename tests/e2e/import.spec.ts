@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { reveal } from './tabs';
+import { perfBudget } from './budget';
 import { utils, write } from 'xlsx';
 import fs from 'node:fs';
 const inspect = async (page: Page) => {
@@ -79,5 +80,5 @@ test('100/200/500要素・4密度の取込から初期描画を計測する', as
   }
   const report = { browser: browser.version(), userAgent: await page.evaluate(() => navigator.userAgent), viewport: { width: 1360, height: 1000 }, devicePixelRatio: await page.evaluate(() => devicePixelRatio), seed: 20261116, repetitions: 3, note: 'Playwright操作・プレビュー表示・自動確定・Canvasの2フレーム待ちを含む。人の確認時間を除く。', results };
   fs.writeFileSync('test-results/M1-benchmarks.json', JSON.stringify(report, null, 2)); await testInfo.attach('benchmarks', { body: JSON.stringify(report, null, 2), contentType: 'application/json' });
-  for (const row of results.filter(r => r.n === 500)) expect(row.maxMs).toBeLessThan(5000);
+  for (const row of results.filter(r => r.n === 500)) expect(row.maxMs).toBeLessThan(perfBudget(5000));
 });
