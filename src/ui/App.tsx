@@ -73,10 +73,7 @@ export function App() {
     </div></header>
     <main id="main">
     <div role="tabpanel" id="panel-data" aria-labelledby="tab-data" hidden={tab !== 'data'}>
-    <section className="intro">
-      <h1>依存関係を読み込み、構造と工程を見える化する。</h1>
-      <p className="lead"><span className="lock" aria-hidden="true" />データはブラウザ内だけで処理され、外部へ送信されません。</p>
-    </section>
+    <h1 className="sr-only">DSM解析</h1>
     <section className="panel" aria-labelledby="import-title" onDragOver={e => e.preventDefault()} onDrop={e => { e.preventDefault(); const next = e.dataTransfer.files[0]; if (next) choose(next); }}>
       <StepTitle no="01" id="import-title" tip={<>ファイルを画面へドロップするか、選択してください。<br />対応形式: CSV / TSV / .xlsx / セッション.json<br />上限: 20MiB・500要素（セッション.jsonは64MiBまで）<br />非対応: .xls・.xlsm・暗号化されたブック</>}>ファイルを読み込む</StepTitle>
       <div className="dropzone">

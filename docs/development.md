@@ -56,16 +56,29 @@ DSM_BROWSER_EXECUTABLE='/Applications/Brave Browser.app/Contents/MacOS/Brave Bro
 
 通常E2EではIGTA／M6の長時間ベンチマークをスキップする。測定コマンド・環境・結果は [性能測定](benchmarks.md) に集約する。新しい機能検証は `docs/validation.md`、残す測定JSONは `docs/benchmarks/data/`、必要な画面記録は `docs/screenshots/` に保存する。再生成可能な出力は `test-results/` に作られ、Git管理対象外。
 
+画面はタブ（データ／解析／結果／出力）に分かれ、非表示タブの要素は操作できない。E2Eで要素に触れる前は `tests/e2e/tabs.ts` の `reveal()` で該当タブへ切り替える。`getByRole` で非表示要素を探す場合は `includeHidden:true` を付ける。
+
 履歴記録は乱数や評価順を変更しない。既存の固定fixtureを、仕様変更の理由なく更新しない。時間・取消による途中終了は完了した固定予算の同seed再現と区別する。
 
 ## 配信と公開準備
 
-GitHubの実workflow実行・公開URLは未確認。外部公開は行っていない。`.github/workflows/validate.yml` が検証、`pages.yml` が配信を担う。
+公開先は https://github.com/YamadaSMAL/DSM 、公開URLは https://yamadasmal.github.io/DSM/ （2026-11-19公開、MIT License）。
 
-1. 公開先リポジトリを決め、Settings → PagesのSourceをGitHub Actionsにする。
-2. リポジトリ変数 `DSM_BASE_PATH` を、ユーザーサイト／独自ドメインなら `/`、プロジェクトサイトなら `/repository-name/` に設定する。
-3. 公開内容を確認して `DSM_PAGES_ENABLED=true` を設定し、mainへのpushまたは手動workflowを実行する。
-4. Actionsの検証・deploy成功後、公開URLで取込・Worker・保存・オフラインHTMLを確認する。
+| workflow | 起動 | 内容 |
+| --- | --- | --- |
+| `.github/workflows/validate.yml` | mainへのpush、pull request | 型検査・単体・本番ビルド、e2e、サブパス |
+| `.github/workflows/pages.yml` | Validateがmainのpushで成功した後、または手動 | 同じコミットをビルドしてPagesへ配信。e2eは再実行しない |
+
+設定済みの項目: Settings → PagesのSourceは「GitHub Actions」。リポジトリ変数は `DSM_BASE_PATH=/DSM/` と `DSM_PAGES_ENABLED=true`。別の公開先へ移す場合は、ユーザーサイト／独自ドメインなら `DSM_BASE_PATH=/` にする。手動実行（workflow_dispatch）はe2eを通さずmainを配信するため、通常はpushで公開する。
+
+CIの注意（決定D039）:
+
+- Playwright 1.56のブラウザ展開はNode 26で停止するため、ブラウザ取得だけNode 24で行い、CDNから最大3回再試行する。手元のMacで同じ停止が起きた場合は、zipを取得して `ditto -x -k` で `~/Library/Caches/ms-playwright/chromium-1194` 等へ展開し、各フォルダへ `INSTALLATION_COMPLETE` を置く。
+- `playwright install-deps` のフォント等はUbuntuミラーが極端に遅い場合があるため、最大8分で打ち切って続行する。
+- e2eの時間上限はローカルでは仕様値、CI（環境変数 `CI`）では5倍（`tests/e2e/budget.ts`）。CIでは停止・ハングの検出に使い、性能目標の判定はローカル計測で行う。
+- ジョブのログはログインが必要。公開状態の確認は Actions 画面か `https://api.github.com/repos/YamadaSMAL/DSM/actions/runs` で行える。
+
+公開後は公開URLで取込・Worker・保存・オフラインHTMLを確認する。
 
 ローカルのビルド先を変える例:
 
