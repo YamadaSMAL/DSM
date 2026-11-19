@@ -48,3 +48,7 @@ trash/                不要な生成物の退避先（Git管理対象外）
 ```
 
 内部規約は「行が列に依存」、グラフは列→行。元データを保持し、構造と工程を同じ優先度で扱う。入力は最大500要素（MCLは200要素）。詳細な制限・未確認事項は[利用ガイド](docs/user-guide.md#上限と未確認事項)を参照。
+
+## ライセンス
+
+[MIT License](LICENSE)。同梱する第三者ライブラリの表記は [public/THIRD_PARTY_NOTICES.txt](public/THIRD_PARTY_NOTICES.txt) を参照。
