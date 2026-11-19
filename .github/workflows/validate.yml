@@ -21,8 +21,21 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: 24
-      - run: npx playwright install --with-deps chromium
-        timeout-minutes: 10
+      # Download the browser from the Playwright CDN (fast). Retry a stalled attempt.
+      - name: Install Playwright browser
+        timeout-minutes: 12
+        run: |
+          for attempt in 1 2 3; do
+            timeout 180 npx playwright install chromium && exit 0
+            echo "Playwright browser download attempt $attempt failed or stalled; retrying."
+          done
+          exit 1
+      # System libraries are already on ubuntu-24.04; install-deps only adds fonts (incl. Japanese) and
+      # mesa upgrades from the Ubuntu mirror, which is sometimes very slow. Best effort, never blocks.
+      - name: Install Playwright system dependencies (best effort)
+        continue-on-error: true
+        timeout-minutes: 8
+        run: npx playwright install-deps chromium
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version-file: .nvmrc

@@ -1,6 +1,10 @@
 name: GitHub Pages
+# Deploy only the commit that the Validate workflow (type check, unit, e2e, subpath) has already passed on main.
+# Running the browser tests once per commit avoids a second Playwright browser install.
 on:
-  push:
+  workflow_run:
+    workflows: [Validate]
+    types: [completed]
     branches: [main]
   workflow_dispatch:
 permissions:
@@ -11,31 +15,27 @@ concurrency:
 jobs:
   build:
     # Enable the repository variable only after deciding the public destination.
-    if: vars.DSM_PAGES_ENABLED == 'true'
+    # A manual run deploys the current main without re-running the browser tests.
+    if: >-
+      vars.DSM_PAGES_ENABLED == 'true' &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'))
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
       - run: npm run check
-      # Playwright 1.56's browser unzip hangs under Node 26; install the browser with Node 24, then return to .nvmrc.
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
-        with:
-          node-version: 24
-      - run: npx playwright install --with-deps chromium
-        timeout-minutes: 10
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
-        with:
-          node-version-file: .nvmrc
-      - run: npm run test:e2e
-      - run: npm run test:subpath
       - name: Build for the configured destination
         env:
           DSM_BASE_PATH: ${{ vars.DSM_BASE_PATH }}
+          GITHUB_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
         run: |
           if [ -z "$DSM_BASE_PATH" ]; then
             echo 'Set DSM_BASE_PATH to / or /repository-name/ before deployment.'
@@ -48,6 +48,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-24.04
+    timeout-minutes: 10
     permissions:
       pages: write
       id-token: write
