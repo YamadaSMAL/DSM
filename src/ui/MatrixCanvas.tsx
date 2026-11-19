@@ -1,6 +1,9 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { identityOrder, permuteMatrix, preprocess, type MatrixData, type PreprocessingOptions } from '../domain';
+import { Tip } from './Tip';
 const SIDE = 620, MARGIN = 100;
+/** セル内の数値表示。桁や指数を落とさず7文字程度に収める（例: 12345678 → 1.2e7）。 */
+export const cellText = (v: number): string => { const text = String(v); if (text.length <= 7) return text; const a = Math.abs(v); return a !== 0 && (a >= 1e6 || a < 1e-3) ? v.toExponential(1).replace('e+', 'e') : String(Number(v.toPrecision(5))).slice(0, 7); };
 interface MatrixCanvasProps {
   matrix: MatrixData;
   order?: readonly number[];
@@ -62,7 +65,7 @@ export function MatrixCanvas({ matrix: source, order: requestedOrder, options, m
     const ctx = node.getContext('2d');
     if (!ctx) return;
     ctx.scale(dpr, dpr);
-    ctx.fillStyle = '#fffefa'; ctx.fillRect(0, 0, SIDE, SIDE);
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, SIDE, SIDE);
     const firstRow = Math.max(0, Math.floor(pan.y / cell)), firstCol = Math.max(0, Math.floor(pan.x / cell));
     const lastRow = Math.min(matrix.n, Math.ceil((pan.y + SIDE - MARGIN) / cell));
     const lastCol = Math.min(matrix.n, Math.ceil((pan.x + SIDE - MARGIN) / cell));
@@ -70,29 +73,29 @@ export function MatrixCanvas({ matrix: source, order: requestedOrder, options, m
     for (let r = firstRow; r < lastRow; r++) for (let c = firstCol; c < lastCol; c++) {
       const v = values[r * matrix.n + c]!;
       const intensity = max === 0 ? 0 : log ? Math.log1p(v) / Math.log1p(max) : v / max;
-      ctx.fillStyle = r === c ? '#d9dfd6' : v > 0 ? alternative ? `rgb(${240 - 180 * intensity},${235 - 150 * intensity},${250 - 50 * intensity})` : `rgb(${220 - 195 * intensity},${240 - 130 * intensity},${223 - 150 * intensity})` : '#f5f6f0';
-      if (r === c && !diagonal) ctx.fillStyle = '#f5f6f0';
+      ctx.fillStyle = r === c ? '#e2e8f0' : v > 0 ? alternative ? `rgb(${240 - 180 * intensity},${235 - 150 * intensity},${250 - 50 * intensity})` : `rgb(${219 - 190 * intensity},${234 - 156 * intensity},${254 - 38 * intensity})` : '#f1f5f9';
+      if (r === c && !diagonal) ctx.fillStyle = '#f1f5f9';
       const x = MARGIN + c * cell - pan.x, y = MARGIN + r * cell - pan.y;
       const px = Math.round(x * dpr) / dpr, py = Math.round(y * dpr) / dpr;
       const gap = cell > 5 ? 1 : 0;
       ctx.fillRect(px, py, Math.max(1 / dpr, Math.round((x + cell) * dpr) / dpr - px - gap), Math.max(1 / dpr, Math.round((y + cell) * dpr) / dpr - py - gap));
-      if (cell * canvasWidth / SIDE >= 28 && (r !== c || diagonal)) { ctx.fillStyle = intensity > .7 && v > 0 ? '#fff' : '#17352e'; ctx.font = `${12 * SIDE / canvasWidth}px system-ui`; ctx.fillText(String(v).slice(0, 7), x + 4, y + cell / 2 + 4); }
+      if (cell * canvasWidth / SIDE >= 28 && (r !== c || diagonal)) { ctx.fillStyle = intensity > .7 && v > 0 ? '#fff' : '#1f2937'; ctx.font = `${12 * SIDE / canvasWidth}px system-ui`; ctx.fillText(cellText(v), x + 4, y + cell / 2 + 4); }
     }
     if (membership) {
-      ctx.strokeStyle = '#1c3330'; ctx.lineWidth = 2;
+      ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 2;
       let start = 0;
       for (let end = 1; end <= matrix.n; end++) if (end === matrix.n || membership[order[end]!] !== membership[order[start]!]) {
         const x = MARGIN + start * cell - pan.x, y = MARGIN + start * cell - pan.y, length = (end - start) * cell;
         ctx.strokeRect(x, y, length, length);
-        if (length * canvasWidth / SIDE > 24) { ctx.font = `${12 * SIDE / canvasWidth}px system-ui`; ctx.fillStyle = '#17352e'; ctx.fillText(`${membershipKind === 'SCC' ? 'S' : 'C'}${membership[order[start]!]! + 1}`, x + 5, y + 16 * SIDE / canvasWidth); }
+        if (length * canvasWidth / SIDE > 24) { ctx.font = `${12 * SIDE / canvasWidth}px system-ui`; ctx.fillStyle = '#1f2937'; ctx.fillText(`${membershipKind === 'SCC' ? 'S' : 'C'}${membership[order[start]!]! + 1}`, x + 5, y + 16 * SIDE / canvasWidth); }
         start = end;
       }
     }
     const active = hover ?? selected;
-    ctx.strokeStyle = '#b46925'; ctx.lineWidth = 2;
+    ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 2;
     ctx.strokeRect(MARGIN, MARGIN + active.row * cell - pan.y, SIDE - MARGIN, cell);
     ctx.strokeRect(MARGIN + active.col * cell - pan.x, MARGIN, cell, SIDE - MARGIN);
-    ctx.strokeStyle = '#153f33'; ctx.lineWidth = 3;
+    ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 3;
     ctx.strokeRect(MARGIN + selected.col * cell - pan.x, MARGIN + selected.row * cell - pan.y, cell, cell);
     ctx.restore();
 
@@ -109,22 +112,21 @@ export function MatrixCanvas({ matrix: source, order: requestedOrder, options, m
   const headerStep = Math.max(1, Math.ceil(18 / cell));
   const headerIndices = (axis: 'x' | 'y') => Array.from({ length: matrix.n }, (_, i) => i).filter(i => i % headerStep === 0 && i * cell >= pan[axis] - cell && i * cell < pan[axis] + SIDE - MARGIN);
   return <section className="panel matrix-panel" aria-labelledby={titleId}>
-    <h2 id={titleId}>{title ?? `DSM · ${matrix.n}要素`}</h2>
-    <div className="controls">
-      <label>表示<select aria-label="表示" value={view} onChange={e => setView(e.target.value)}><option value="original">元DSM（方向正規化済み）</option><option value="analysis">解析DSM（{analysisKind === 'symmetric' ? 'S・mean対称化' : 'D'}）</option></select></label>
-      {!options && <><label>解析閾値<input type="number" min="0" step="any" value={threshold} onChange={e => { const v = Number(e.target.value); if (Number.isFinite(v) && v >= 0) setThreshold(v); }} /></label>
-      <label><input type="checkbox" checked={binary} onChange={e => setBinary(e.target.checked)} />閾値適用後に二値化</label></>}
-      <label><input type="checkbox" checked={log} onChange={e => { setLog(e.target.checked); onColorChange?.({ log: e.target.checked, alternative }); }} />対数配色</label>
-      <label><input type="checkbox" checked={diagonal} onChange={e => setDiagonal(e.target.checked)} />元対角を表示</label>
-      <label><input type="checkbox" checked={alternative} onChange={e => { setAlternative(e.target.checked); onColorChange?.({ log, alternative: e.target.checked }); }} />代替配色</label>
+    <div className="step-title"><h2 id={titleId}>{title ?? `DSM · ${matrix.n}要素`}</h2><Tip text={<>{view === 'analysis' && analysisKind === 'symmetric' ? '解析Sは双方向を平均した構造用無向行列です。元DSMの方向は列 → 行です。' : '行が列に依存します。'}<br />マス目の色が濃いほど依存が強いことを示します。ドラッグでパン、矢印キーでセル移動。クリックで詳細を固定します。</>} /></div>
+    <div className="toolbar">
+      <label className="field">表示<select aria-label="表示" value={view} onChange={e => setView(e.target.value)}><option value="original">元DSM（方向正規化済み）</option><option value="analysis">解析DSM（{analysisKind === 'symmetric' ? 'S・mean対称化' : 'D'}）</option></select></label>
+      {!options && <><label className="field">解析閾値<input type="number" min="0" step="any" value={threshold} onChange={e => { const v = Number(e.target.value); if (Number.isFinite(v) && v >= 0) setThreshold(v); }} /></label>
+      <label className="check"><input type="checkbox" checked={binary} onChange={e => setBinary(e.target.checked)} />閾値適用後に二値化</label></>}
+      <span className="with-tip"><label className="check"><input type="checkbox" checked={log} onChange={e => { setLog(e.target.checked); onColorChange?.({ log: e.target.checked, alternative }); }} />対数配色</label><Tip text="値の差が大きいとき、弱い依存も見分けやすくなるよう色の濃さを対数で付けます。" /></span>
+      <label className="check"><input type="checkbox" checked={diagonal} onChange={e => setDiagonal(e.target.checked)} />元対角を表示</label>
+      <span className="with-tip"><label className="check"><input type="checkbox" checked={alternative} onChange={e => { setAlternative(e.target.checked); onColorChange?.({ log, alternative: e.target.checked }); }} />代替配色</label><Tip text="緑系の代わりに紫系の配色で表示します。色の見分けにくさがある場合や印刷向けに。" /></span>
     </div>
-    <div className="controls">
-      <label>ズーム<input aria-label="ズーム" type="range" min="1" max={Math.max(20, matrix.n / 10)} step="0.5" value={zoom} onChange={e => { const z = Number(e.target.value); setZoom(z); const limit = (SIDE - MARGIN) * (z - 1); setPan(p => ({ x: Math.min(p.x, limit), y: Math.min(p.y, limit) })); }} /></label><output>{zoom.toFixed(1)}倍</output>
-      <button onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }}>全体表示</button>
-      <label>検索<input type="search" placeholder="ラベル / ID" value={query} onChange={e => setQuery(e.target.value)} /></label>
+    <div className="toolbar">
+      <label className="zoom">ズーム<input aria-label="ズーム" type="range" min="1" max={Math.max(20, matrix.n / 10)} step="0.5" value={zoom} onChange={e => { const z = Number(e.target.value); setZoom(z); const limit = (SIDE - MARGIN) * (z - 1); setPan(p => ({ x: Math.min(p.x, limit), y: Math.min(p.y, limit) })); }} /></label><output>{zoom.toFixed(1)}倍</output>
+      <button className="ghost small" onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }}>全体表示</button>
+      <label className="search">検索<input type="search" placeholder="ラベル / ID" value={query} onChange={e => setQuery(e.target.value)} /></label>
     </div>
     {query && <div className="search-results" aria-label="検索結果">{matches.length}件 {matches.map(e => <button key={e.id} onClick={() => focusElement(e.originalIndex)}>{e.label} · {e.id}</button>)}</div>}
-    <p>{view === 'analysis' && analysisKind === 'symmetric' ? '解析Sは双方向を平均した構造用無向行列です。元DSMの方向は列 → 行です。' : '行が列に依存します。'}ドラッグでパン、矢印キーでセル移動。クリックで詳細を固定します。</p>
     <div className="matrix-layout"><div className="canvas-wrap"><div className="row-headers" aria-label="行見出し">{headerIndices('y').map(i => <span key={i} title={`${matrix.elements[i]!.label} / ${matrix.elements[i]!.id}`} style={{ top: `${(MARGIN + i * cell - pan.y) / SIDE * 100}%` }}>{matrix.elements[i]!.label}</span>)}</div><div className="col-headers" aria-label="列見出し">{headerIndices('x').map(i => <span key={i} title={`${matrix.elements[i]!.label} / ${matrix.elements[i]!.id}`} style={{ left: `${(MARGIN + i * cell - pan.x) / SIDE * 100}%` }}>{matrix.elements[i]!.label}</span>)}</div><canvas ref={canvas} style={{ width: '100%', maxWidth: SIDE, aspectRatio: '1', touchAction: 'none' }} tabIndex={0} role="grid" aria-label="DSM行列。矢印キーでセルを選択" aria-describedby={detailId}
       onPointerDown={e => { const p = point(e); drag.current = { ...p, panX: pan.x, panY: pan.y, moved: false }; e.currentTarget.setPointerCapture(e.pointerId); }}
       onPointerMove={e => { const p = point(e); const d = drag.current; if (d) { if (Math.abs(p.x - d.x) + Math.abs(p.y - d.y) > 4) d.moved = true; if (d.moved) { const limit = Math.max(0, matrix.n * cell - (SIDE - MARGIN)); setPan({ x: Math.max(0, Math.min(limit, d.panX + d.x - p.x)), y: Math.max(0, Math.min(limit, d.panY + d.y - p.y)) }); } } else setHover(hit(p.x, p.y)); }}
@@ -139,7 +141,7 @@ export function MatrixCanvas({ matrix: source, order: requestedOrder, options, m
       {membership ? <p>{membershipKind}: 行{membership[row.originalIndex]! + 1}・列{membership[col.originalIndex]! + 1}{bands ? ` / Band: 行${bands[row.originalIndex]}・列${bands[col.originalIndex]}` : ''}</p> : <p>所属: 未解析</p>}
       <p>閾値で除外した非ゼロセル: {analysis.transformations.find(t => t.kind === 'threshold')?.affectedCells}件</p>
     </aside></div>
-    <button onClick={() => setTable(!table)} aria-expanded={table}>選択行の表形式表示</button>
+    <button className="ghost small" onClick={() => setTable(!table)} aria-expanded={table}>選択行の表形式表示</button>
     {table && <div className="table-scroll"><table><caption>{row.label} の行</caption><thead><tr><th>列 / ID</th><th>値</th><th>原値</th></tr></thead><tbody>{matrix.elements.map((e, j) => <tr key={e.id}><th>{e.label} / {e.id}</th><td>{values[selected.row * matrix.n + j]}</td><td>{matrix.values[selected.row * matrix.n + j]}</td></tr>)}</tbody></table></div>}
   </section>;
 }

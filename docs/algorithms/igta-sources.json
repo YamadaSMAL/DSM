@@ -7,7 +7,7 @@
       "id": "P12",
       "doi": "10.1115/DETC2012-70076",
       "metadataUrl": "https://research.aalto.fi/en/publications/improved-clustering-algorithm-for-design-structure-matrix/",
-      "access": "Final 10-page user-provided PDF now available; profile rules and source locations specified by user in IGTA_ALGORITHM_SPEC.md. Historical thesis-only status superseded."
+      "access": "Final 10-page user-provided PDF now available; profile rules and source locations specified by user in IGTA_ALGORITHM_SPEC.md. Historical thesis-only status superseded. Local PDF deleted at user request on 2026-11-19; bibliographic and checksum records retained."
     },
     {
       "id": "T12",
@@ -18,7 +18,7 @@
       "id": "P13",
       "doi": "10.1115/DETC2013-12041",
       "url": "https://www.researchgate.net/publication/267490581_Fast_Hybrid_Genetic_Clustering_Algorithm_for_Design_Structure_Matrix",
-      "access": "Full 10-page user-provided PDF now available; text and key figures/equations reviewed. Historical retrieval failure superseded."
+      "access": "Full 10-page user-provided PDF now available; text and key figures/equations reviewed. Historical retrieval failure superseded. Local PDF deleted at user request on 2026-11-19; bibliographic and checksum records retained."
     },
     {
       "id": "W18",
@@ -72,9 +72,9 @@
     }
   ],
   "localProfile": {
-    "file": "IGTA_ALGORITHM_SPEC.md",
+    "file": "docs/IGTA_ALGORITHM_SPEC.md",
     "version": "1.0",
-    "sha256": "8697421431d7892f05d9d39b1d5792e15667b13aef2fcfda41e1caf4f2f6b0a3",
+    "sha256": "76304e38b9e2698fe6f2465716af448495e27b934bc2da221dfa13ef1c870842",
     "executionOrder": "8.6: crossover, child1 mutate/legalize/evaluate/archive, child2 mutate/legalize/evaluate/archive",
     "authorCodeAgreementVerified": false
   },
@@ -82,12 +82,22 @@
     {
       "id": "P12",
       "file": "DETC2012-70076_final-April16.pdf",
-      "sha256": "5e69db02864b75e48181e071132f51efa5d9096618b59df909d69d2123933c1a"
+      "sha256": "5e69db02864b75e48181e071132f51efa5d9096618b59df909d69d2123933c1a",
+      "localStatus": "deleted-at-user-request",
+      "deletedOn": "2026-11-19"
     },
     {
       "id": "P13",
       "file": "DETC2013-12041BorjessonSellgrenrevPA11.pdf",
-      "sha256": "232b6f61145a6212f0d6f7c49d212e9d6e5d352e5a4121c1e36217fd672a0046"
+      "sha256": "232b6f61145a6212f0d6f7c49d212e9d6e5d352e5a4121c1e36217fd672a0046",
+      "localStatus": "deleted-at-user-request",
+      "deletedOn": "2026-11-19"
     }
-  ]
+  ],
+  "referenceNotebook": {
+    "file": "dsm_clustering.ipynb",
+    "sha256": "8064d0dc2028e9f2415d26c70cb38a77d7a9834a1cefff2cd98233157e2f3737",
+    "localStatus": "deleted-at-user-request",
+    "deletedOn": "2026-11-19"
+  }
 }

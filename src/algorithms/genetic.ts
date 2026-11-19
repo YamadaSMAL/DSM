@@ -1,3 +1,4 @@
+import { historyRecorder } from './history';
 import { DomainError, finiteResult, assertMatrix, assertZeroDiagonal, identityOrder, structureMetrics, type DenseMatrix } from '../domain';
 import { buildHierarchy, cutHierarchy, defaultK, immediateContext, type ComputeContext } from './hierarchical';
 import { constraintUnits, satisfiesConstraints } from './constraints';
@@ -15,7 +16,8 @@ export async function runGenetic(s:DenseMatrix,p:Parameters,seed:number,context:
   const conflicts=Array.from({length:s.n},()=>new Set<number>());for(const [a,b]of c?.cannotLink??[]){conflicts[a!]!.add(b!);conflicts[b!]!.add(a!);}
   let evaluations=0,iterations=0,attempts=0,offspringInGeneration=0;
   const objective=(m:number[])=>{const sizes=Array<number>(s.n).fill(0);for(const g of m)sizes[g]!++;let sum=0;for(const {a,b,weight}of weightedPairs)sum=finiteResult(sum+finiteResult(weight*(m[a]===m[b]?sizes[m[a]!]!:s.n)**p.alpha!));return sum;};
-  const score=(m:number[])=>{evaluations++;return{m:canonicalGenes(m),value:objective(canonicalGenes(m))};};
+  const history=historyRecorder('coordinationCost','candidate');let observedBest=Infinity;
+  const score=(m:number[])=>{evaluations++;const candidate={m:canonicalGenes(m),value:objective(canonicalGenes(m))};observedBest=Math.min(observedBest,candidate.value);history.add({iteration:iterations,evaluations,value:candidate.value,best:observedBest});return candidate;};
   const repair=async(genes:number[]):Promise<number[]|null>=>{
     if(satisfiesConstraints(genes,c))return canonicalGenes(genes);
     for(let attempt=0;attempt<20;attempt++){
@@ -30,7 +32,7 @@ export async function runGenetic(s:DenseMatrix,p:Parameters,seed:number,context:
     }
     return null;
   };
-  if(s.n===1){const initialState={order:[0],membership:[0]};return{...initialState,iterations:0,evaluations:1,status:'completed',stopReason:'trivial',initialState,trace:{initialObjective:0,bestObjective:0,initializationAttempts:1,offspringInGeneration:0}};}
+  if(s.n===1){history.add({iteration:0,evaluations:1,value:0,best:0});const initialState={order:[0],membership:[0]};return{history:history.finish(),...initialState,iterations:0,evaluations:1,status:'completed',stopReason:'trivial',initialState,trace:{initialObjective:0,bestObjective:0,initializationAttempts:1,offspringInGeneration:0}};}
   const tree=await buildHierarchy(s,{checkpoint:async progress=>{await context.checkpoint({...progress,phase:'GA初期階層解'});if(context.shouldStop?.())throw new Error(context.shouldStop!());}});
   const seeds=[cutHierarchy(tree,defaultK(s.n)).membership,identityOrder(s.n)];
   const population:ReturnType<typeof score>[]=[];
@@ -56,5 +58,5 @@ export async function runGenetic(s:DenseMatrix,p:Parameters,seed:number,context:
   }
   const stopped=context.shouldStop?.();if(stopped)reason=stopped;
   const authoritative=structureMetrics(s,best.m,p.alpha).coordinationCost;if(authoritative!==best.value)throw new DomainError('OBJECTIVE_MISMATCH','GA目的値が共有指標と一致しません。');
-  return{membership:[...best.m],order:identityOrder(s.n).sort((a,b)=>best.m[a]!-best.m[b]!||a-b),iterations,evaluations,status:stopped==='cancelled'?'cancelled':stopped?'limit-reached':'completed',stopReason:reason,initialState,trace:{initialObjective,bestObjective:best.value,initializationAttempts:attempts,offspringInGeneration}};
+  return{history:history.finish(),membership:[...best.m],order:identityOrder(s.n).sort((a,b)=>best.m[a]!-best.m[b]!||a-b),iterations,evaluations,status:stopped==='cancelled'?'cancelled':stopped?'limit-reached':'completed',stopReason:reason,initialState,trace:{initialObjective,bestObjective:best.value,initializationAttempts:attempts,offspringInGeneration}};
 }

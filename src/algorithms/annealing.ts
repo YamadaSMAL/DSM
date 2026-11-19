@@ -1,3 +1,4 @@
+import { historyRecorder, type SearchHistory } from './history';
 import { assertMatrix, assertZeroDiagonal, finiteResult, identityOrder, processMetrics, structureMetrics, type DenseMatrix } from '../domain';
 import { partitionProcess } from './process';
 import { buildHierarchy, cutHierarchy, immediateContext, type ComputeContext } from './hierarchical';
@@ -5,7 +6,7 @@ import { mulberry32 } from './random';
 export interface AnnealingOptions {alpha:number;maxProposals:number;maxEvaluations:number;coolingInterval:number;coolingRate:number;temperatureFloor:number;temperatureSamples:number;initialization:'separate'|'hierarchical';k:number}
 export type StopReason='proposal-budget'|'evaluation-budget'|'temperature-floor'|'trivial'|'converged'|'iteration-limit'|'cancelled'|'time-limit';
 export interface AnnealingTrace extends Record<string,number> {initialTemperature:number;finalTemperature:number;calibrationEvaluations:number;calibrationAttempts:number;initialObjective:number;initialSecondary:number;bestObjective:number;bestSecondary:number}
-export interface SearchResult {order:number[];membership?:number[];scc?:ReturnType<typeof partitionProcess>;iterations:number;evaluations:number;status:'completed'|'limit-reached'|'cancelled';stopReason:StopReason;initialState:{order:number[];membership?:number[]};trace:AnnealingTrace}
+export interface SearchResult {history:SearchHistory;order:number[];membership?:number[];scc?:ReturnType<typeof partitionProcess>;iterations:number;evaluations:number;status:'completed'|'limit-reached'|'cancelled';stopReason:StopReason;initialState:{order:number[];membership?:number[]};trace:AnnealingTrace}
 export function normalizeMembership(membership:readonly number[]):{membership:number[];order:number[]}{const groups=new Map<number,number[]>();membership.forEach((c,i)=>{const group=groups.get(c)??[];group.push(i);groups.set(c,group);});const sorted=[...groups.values()].sort((a,b)=>a[0]!-b[0]!),normalized=new Array<number>(membership.length);sorted.forEach((group,c)=>group.forEach(i=>{normalized[i]=c;}));return{membership:normalized,order:sorted.flat()};}
 export function metropolis(delta:number,temperature:number,random:()=>number):boolean{return delta<=0||random()<Math.exp(-delta/temperature);}
 export interface ClusterState {membership:number[];sizes:number[];internal:Float64Array;score:number}
@@ -31,9 +32,11 @@ export function sequenceDelta(d:DenseMatrix,order:readonly number[],first:number
 }
 interface Neighbor {delta:number;secondary:number;apply():void}
 interface Engine {score():number;secondary():number;propose():Neighbor|null;capture():number[];rebase():void}
-async function search(engine:Engine,p:AnnealingOptions,random:()=>number,context:ComputeContext,trivial:boolean){
+async function search(engine:Engine,p:AnnealingOptions,random:()=>number,context:ComputeContext,trivial:boolean,metric:'coordinationCost'|'feedbackWeight'){
   let iterations=0,evaluations=1,calibration=0,attempts=0;const positives:number[]=[],initial=engine.score(),initialSecondary=engine.secondary();
   let best=engine.capture(),bestScore=initial,bestSecondary=initialSecondary,temperature=1,reason:StopReason='trivial';
+  const history=historyRecorder(metric,'current');
+  const observe=()=>history.add({iteration:iterations,evaluations,value:engine.score(),best:bestScore});observe();
   const replay=context.replay,calibrationBudget=p.maxEvaluations,calibrationAttempts=replay?.iterations===0?(replay.calibrationAttempts??10000):10000;
   if(!trivial)while(calibration<p.temperatureSamples&&evaluations<calibrationBudget&&attempts<calibrationAttempts){
     attempts++;const neighbor=engine.propose();if(neighbor){evaluations++;calibration++;if(neighbor.delta>0)positives.push(neighbor.delta);}
@@ -51,11 +54,13 @@ async function search(engine:Engine,p:AnnealingOptions,random:()=>number,context
     if(neighbor){evaluations++;if(metropolis(neighbor.delta,temperature,random))neighbor.apply();}
     if(iterations%1000===0)engine.rebase();
     if(engine.score()<bestScore||engine.score()===bestScore&&engine.secondary()<bestSecondary){best=engine.capture();bestScore=engine.score();bestSecondary=engine.secondary();}
+    observe();
     if(iterations%p.coolingInterval===0)temperature*=p.coolingRate;
     if(iterations%64===0)await context.checkpoint({iterations,evaluations,phase:'焼きなまし探索',bestValue:bestScore,bestCount:bestSecondary,temperature});
   }
   const stop=context.shouldStop?.();if(stop)reason=stop;
-  return{best,iterations,evaluations,status:reason==='cancelled'?'cancelled' as const:reason==='time-limit'?'limit-reached' as const:'completed' as const,stopReason:reason,trace:{initialTemperature,finalTemperature:temperature,calibrationEvaluations:calibration,calibrationAttempts:attempts,initialObjective:initial,initialSecondary,bestObjective:bestScore,bestSecondary}};
+  observe();
+  return{history:history.finish(),best,iterations,evaluations,status:reason==='cancelled'?'cancelled' as const:reason==='time-limit'?'limit-reached' as const:'completed' as const,stopReason:reason,trace:{initialTemperature,finalTemperature:temperature,calibrationEvaluations:calibration,calibrationAttempts:attempts,initialObjective:initial,initialSecondary,bestObjective:bestScore,bestSecondary}};
 }
 export async function annealClusters(s:DenseMatrix,p:AnnealingOptions,seed:number,context:ComputeContext=immediateContext):Promise<SearchResult>{
   assertMatrix(s);assertZeroDiagonal(s);const random=mulberry32(seed);
@@ -68,7 +73,7 @@ export async function annealClusters(s:DenseMatrix,p:AnnealingOptions,seed:numbe
     if(to===-1){if(state.sizes[from]===1)return null;to=state.sizes.indexOf(0);}
     const move=clusterMove(s,state,element,to,p.alpha);return{delta:move.delta,secondary:0,apply:()=>applyClusterMove(state,move)};
   }};
-  const result=await search(engine,p,random,context,s.n===1);let normalized=normalizeMembership(result.best),score=structureMetrics(s,normalized.membership,p.alpha).coordinationCost;
+  const result=await search(engine,p,random,context,s.n===1,'coordinationCost');let normalized=normalizeMembership(result.best),score=structureMetrics(s,normalized.membership,p.alpha).coordinationCost;
   if(score>result.trace.initialObjective){normalized=normalizeMembership(initial.membership);score=result.trace.initialObjective;}
   return{...result,...normalized,initialState:initial,trace:{...result.trace,bestObjective:score}};
 }
@@ -80,7 +85,7 @@ export async function annealSequence(d:DenseMatrix,p:AnnealingOptions,seed:numbe
     const a=Math.floor(random()*group.length);let b=Math.floor(random()*(group.length-1));if(b>=a)b++;const first=group[a]!,second=group[b]!,delta=sequenceDelta(d,order,first,second);
     return{delta:delta.weight,secondary:delta.count,apply:()=>{[order[first],order[second]]=[order[second]!,order[first]!];score=finiteResult(score+delta.weight);count+=delta.count;}};
   }};
-  const result=await search(engine,p,random,context,total===0);let best=result.best,final=processMetrics(d,best);
+  const result=await search(engine,p,random,context,total===0,'feedbackWeight');let best=result.best,final=processMetrics(d,best);
   if(final.feedbackWeight>result.trace.initialObjective||final.feedbackWeight===result.trace.initialObjective&&final.feedbackCount>result.trace.initialSecondary){best=initial;final=processMetrics(d,best);}
   return{...result,order:best,scc,initialState:{order:initial},trace:{...result.trace,bestObjective:final.feedbackWeight,bestSecondary:final.feedbackCount}};
 }

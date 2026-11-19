@@ -575,7 +575,7 @@ alpha=0.1096, beta=0.8071, log2(4)=2
 - p.3 Figure 1: bid選択と確率的移動。Table 2: 元のTotalCost。
 - p.4 Table 3: 集約行列IOによるTotalCost。SMAとITCの本文。
 - p.5 Figure 2: 未試行リスト、抽出・削除、changeに基づくリセット。
-- 提供ファイル: [DETC2012-70076_final-April16.pdf](DETC2012-70076_final-April16.pdf)
+- 確認に用いた提供ファイル: `DETC2012-70076_final-April16.pdf`（2026-11-19、ユーザーの指示でローカルファイルを削除。出典・SHA-256は `docs/algorithms/igta-sources.json` に保持）
 - SHA-256: `5e69db02864b75e48181e071132f51efa5d9096618b59df909d69d2123933c1a`
 
 ### P13
@@ -585,7 +585,7 @@ alpha=0.1096, beta=0.8071, log2(4)=2
 - p.5 Figure 5/6: 違法要素修正、MDL評価と染色体再符号化。
 - p.6 Table 1: alpha/beta、horizontal、overlap/busなし。
 - pp.8–9: 個体数・世代数・独立実行の議論。著者コードは要求に応じて提供との記載。
-- 提供ファイル: [DETC2013-12041BorjessonSellgrenrevPA11.pdf](DETC2013-12041BorjessonSellgrenrevPA11.pdf)
+- 確認に用いた提供ファイル: `DETC2013-12041BorjessonSellgrenrevPA11.pdf`（2026-11-19、ユーザーの指示でローカルファイルを削除。出典・SHA-256は `docs/algorithms/igta-sources.json` に保持）
 - SHA-256: `232b6f61145a6212f0d6f7c49d212e9d6e5d352e5a4121c1e36217fd672a0046`
 
 ### P16

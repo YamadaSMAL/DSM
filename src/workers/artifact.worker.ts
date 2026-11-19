@@ -7,11 +7,12 @@ import type { ArtifactRequest, ArtifactResponse } from './artifactProtocol';
 const scope=self as unknown as {onmessage:((event:MessageEvent<ArtifactRequest>)=>void)|null;postMessage(message:ArtifactResponse,transfer?:Transferable[]):void};
 scope.onmessage=async({data})=>{
   const {runId,dataRevision}=data;
+  const progress=(done:number,total:number)=>scope.postMessage({runId,dataRevision,status:'progress',done,total});
   try {
-    if(data.type==='load') {scope.postMessage({runId,dataRevision,status:'loaded',session:await parseSession(data.bytes)});return;}
+    if(data.type==='load') {scope.postMessage({runId,dataRevision,status:'loaded',session:await parseSession(data.bytes,progress)});return;}
     let bytes:ArrayBuffer,mime:string;
-    if(data.format==='json'){const session=await validateSession(data.snapshot);bytes=new TextEncoder().encode(serializeSession(session)).buffer;mime='application/json';}
-    else {const prepared=await prepareExport(data.snapshot);if(data.format==='html'){bytes=new TextEncoder().encode(htmlExport(prepared)).buffer;mime='text/html';}else{bytes=xlsxExport(prepared);mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';}}
+    if(data.format==='json'){const session=await validateSession(data.snapshot,progress);bytes=new TextEncoder().encode(serializeSession(session)).buffer;mime='application/json';}
+    else {const prepared=await prepareExport(data.snapshot,progress);if(data.format==='html'){bytes=new TextEncoder().encode(htmlExport(prepared)).buffer;mime='text/html';}else{bytes=xlsxExport(prepared);mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';}}
     scope.postMessage({runId,dataRevision,status:'exported',bytes,mime,filename:outputFilename(data.snapshot.input.provenance.sourceName,data.format,data.snapshot.metadata)},[bytes]);
   }catch(error){scope.postMessage({runId,dataRevision,status:'failed',error:error instanceof Error?error.message:String(error)});}
 };

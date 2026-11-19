@@ -1,0 +1,604 @@
+[
+  {
+    "id": "igta-plus-paper-informed-v1",
+    "seed": 0,
+    "result": {
+      "order": [
+        0,
+        1,
+        2,
+        3,
+        6,
+        7,
+        4,
+        5
+      ],
+      "membership": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        2,
+        0,
+        0
+      ],
+      "objective": {
+        "name": "totalCost",
+        "value": 565.5,
+        "version": "igta-reference-1.0-totalCost",
+        "conditions": {
+          "costExponent": 1
+        }
+      },
+      "trace": {
+        "initialObjective": 660,
+        "bestObjective": 565.5
+      },
+      "iterations": 15,
+      "evaluations": 9,
+      "status": "completed",
+      "stopReason": "itc-exhausted",
+      "metrics": {
+        "alpha": 1,
+        "totalWeight": 41.25,
+        "internalWeight": 23.625,
+        "externalWeight": 17.625,
+        "externalRatio": 0.42727272727272725,
+        "coordinationCost": 282.75,
+        "clusterCount": 3,
+        "minClusterSize": 1,
+        "maxClusterSize": 6,
+        "meanClusterSize": 2.6666666666666665,
+        "totalCost": 565.5
+      }
+    }
+  },
+  {
+    "id": "igta-plus-paper-informed-v1",
+    "seed": 42,
+    "result": {
+      "order": [
+        0,
+        1,
+        2,
+        4,
+        5,
+        6,
+        3,
+        7
+      ],
+      "membership": [
+        0,
+        1,
+        1,
+        2,
+        1,
+        1,
+        1,
+        3
+      ],
+      "objective": {
+        "name": "totalCost",
+        "value": 565.5,
+        "version": "igta-reference-1.0-totalCost",
+        "conditions": {
+          "costExponent": 1
+        }
+      },
+      "trace": {
+        "initialObjective": 660,
+        "bestObjective": 565.5
+      },
+      "iterations": 12,
+      "evaluations": 8,
+      "status": "completed",
+      "stopReason": "itc-exhausted",
+      "metrics": {
+        "alpha": 1,
+        "totalWeight": 41.25,
+        "internalWeight": 15.75,
+        "externalWeight": 25.5,
+        "externalRatio": 0.6181818181818182,
+        "coordinationCost": 282.75,
+        "clusterCount": 4,
+        "minClusterSize": 1,
+        "maxClusterSize": 5,
+        "meanClusterSize": 2,
+        "totalCost": 565.5
+      }
+    }
+  },
+  {
+    "id": "igta-pp-gigta-paper-informed-v1",
+    "seed": 0,
+    "result": {
+      "order": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "membership": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "objective": {
+        "name": "mdl",
+        "value": 18.991500000000006,
+        "version": "igta-reference-1.0-mdl",
+        "conditions": {
+          "mdlAlpha": 0.1096,
+          "mdlBeta": 0.8071,
+          "normalization": "zero-diagonal-global-max-v1",
+          "clusterSlots": 3
+        }
+      },
+      "trace": {
+        "initialObjective": 18.991500000000006,
+        "bestObjective": 18.991500000000006
+      },
+      "iterations": 4,
+      "evaluations": 20,
+      "status": "completed",
+      "stopReason": "generation-budget",
+      "metrics": {
+        "alpha": 1,
+        "totalWeight": 41.25,
+        "internalWeight": 41.25,
+        "externalWeight": 0,
+        "externalRatio": 0,
+        "coordinationCost": 330,
+        "clusterCount": 1,
+        "minClusterSize": 8,
+        "maxClusterSize": 8,
+        "meanClusterSize": 8,
+        "mdl": 18.991500000000006
+      }
+    }
+  },
+  {
+    "id": "igta-pp-gigta-paper-informed-v1",
+    "seed": 42,
+    "result": {
+      "order": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "membership": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "objective": {
+        "name": "mdl",
+        "value": 18.991500000000006,
+        "version": "igta-reference-1.0-mdl",
+        "conditions": {
+          "mdlAlpha": 0.1096,
+          "mdlBeta": 0.8071,
+          "normalization": "zero-diagonal-global-max-v1",
+          "clusterSlots": 3
+        }
+      },
+      "trace": {
+        "initialObjective": 40.07765,
+        "bestObjective": 18.991500000000006
+      },
+      "iterations": 4,
+      "evaluations": 20,
+      "status": "completed",
+      "stopReason": "generation-budget",
+      "metrics": {
+        "alpha": 1,
+        "totalWeight": 41.25,
+        "internalWeight": 41.25,
+        "externalWeight": 0,
+        "externalRatio": 0,
+        "coordinationCost": 330,
+        "clusterCount": 1,
+        "minClusterSize": 8,
+        "maxClusterSize": 8,
+        "meanClusterSize": 8,
+        "mdl": 18.991500000000006
+      }
+    }
+  },
+  {
+    "id": "sa-cluster-v1",
+    "seed": 0,
+    "result": {
+      "order": [
+        0,
+        1,
+        5,
+        7,
+        2,
+        3,
+        4,
+        6
+      ],
+      "membership": [
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0
+      ],
+      "trace": {
+        "initialTemperature": 1,
+        "finalTemperature": 0.95,
+        "calibrationEvaluations": 100,
+        "calibrationAttempts": 109,
+        "initialObjective": 330,
+        "initialSecondary": 0,
+        "bestObjective": 243.5,
+        "bestSecondary": 0
+      },
+      "iterations": 1000,
+      "evaluations": 1101,
+      "status": "completed",
+      "stopReason": "proposal-budget",
+      "metrics": {
+        "alpha": 1,
+        "totalWeight": 41.25,
+        "internalWeight": 21.625,
+        "externalWeight": 19.625,
+        "externalRatio": 0.47575757575757577,
+        "coordinationCost": 243.5,
+        "clusterCount": 2,
+        "minClusterSize": 4,
+        "maxClusterSize": 4,
+        "meanClusterSize": 4
+      }
+    }
+  },
+  {
+    "id": "sa-cluster-v1",
+    "seed": 42,
+    "result": {
+      "order": [
+        0,
+        1,
+        5,
+        7,
+        2,
+        3,
+        4,
+        6
+      ],
+      "membership": [
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0
+      ],
+      "trace": {
+        "initialTemperature": 1,
+        "finalTemperature": 0.95,
+        "calibrationEvaluations": 100,
+        "calibrationAttempts": 114,
+        "initialObjective": 330,
+        "initialSecondary": 0,
+        "bestObjective": 243.5,
+        "bestSecondary": 0
+      },
+      "iterations": 1000,
+      "evaluations": 1099,
+      "status": "completed",
+      "stopReason": "proposal-budget",
+      "metrics": {
+        "alpha": 1,
+        "totalWeight": 41.25,
+        "internalWeight": 21.625,
+        "externalWeight": 19.625,
+        "externalRatio": 0.47575757575757577,
+        "coordinationCost": 243.5,
+        "clusterCount": 2,
+        "minClusterSize": 4,
+        "maxClusterSize": 4,
+        "meanClusterSize": 4
+      }
+    }
+  },
+  {
+    "id": "sa-sequence-v1",
+    "seed": 0,
+    "result": {
+      "order": [
+        2,
+        6,
+        7,
+        0,
+        5,
+        3,
+        4,
+        1
+      ],
+      "trace": {
+        "initialTemperature": 10.083195264880239,
+        "finalTemperature": 9.579035501636227,
+        "calibrationEvaluations": 100,
+        "calibrationAttempts": 100,
+        "initialObjective": 41,
+        "initialSecondary": 26,
+        "bestObjective": 32.5,
+        "bestSecondary": 24
+      },
+      "iterations": 1000,
+      "evaluations": 1101,
+      "status": "completed",
+      "stopReason": "proposal-budget",
+      "metrics": {
+        "totalWeight": 82.5,
+        "feedbackWeight": 32.5,
+        "feedbackCount": 24,
+        "feedbackRatio": 0.3939393939393939,
+        "interSccFeedbackWeight": 0,
+        "sccCount": 1,
+        "maxSccSize": 8,
+        "cyclicBlockCount": 1,
+        "bandCount": 1
+      }
+    }
+  },
+  {
+    "id": "sa-sequence-v1",
+    "seed": 42,
+    "result": {
+      "order": [
+        3,
+        2,
+        4,
+        0,
+        6,
+        1,
+        7,
+        5
+      ],
+      "trace": {
+        "initialTemperature": 10.643372779595808,
+        "finalTemperature": 10.111204140616017,
+        "calibrationEvaluations": 100,
+        "calibrationAttempts": 100,
+        "initialObjective": 41,
+        "initialSecondary": 26,
+        "bestObjective": 33.25,
+        "bestSecondary": 24
+      },
+      "iterations": 1000,
+      "evaluations": 1101,
+      "status": "completed",
+      "stopReason": "proposal-budget",
+      "metrics": {
+        "totalWeight": 82.5,
+        "feedbackWeight": 33.25,
+        "feedbackCount": 24,
+        "feedbackRatio": 0.403030303030303,
+        "interSccFeedbackWeight": 0,
+        "sccCount": 1,
+        "maxSccSize": 8,
+        "cyclicBlockCount": 1,
+        "bandCount": 1
+      }
+    }
+  },
+  {
+    "id": "ga-cluster-v1",
+    "seed": 0,
+    "result": {
+      "order": [
+        0,
+        1,
+        5,
+        7,
+        2,
+        4,
+        3,
+        6
+      ],
+      "membership": [
+        0,
+        0,
+        1,
+        2,
+        1,
+        0,
+        2,
+        0
+      ],
+      "trace": {
+        "initialObjective": 257.5,
+        "bestObjective": 257.5,
+        "initializationAttempts": 4,
+        "offspringInGeneration": 0
+      },
+      "iterations": 4,
+      "evaluations": 12,
+      "status": "completed",
+      "stopReason": "generation-budget",
+      "metrics": {
+        "alpha": 1,
+        "totalWeight": 41.25,
+        "internalWeight": 15.875,
+        "externalWeight": 25.375,
+        "externalRatio": 0.6151515151515151,
+        "coordinationCost": 257.5,
+        "clusterCount": 3,
+        "minClusterSize": 2,
+        "maxClusterSize": 4,
+        "meanClusterSize": 2.6666666666666665
+      }
+    }
+  },
+  {
+    "id": "ga-cluster-v1",
+    "seed": 42,
+    "result": {
+      "order": [
+        0,
+        1,
+        5,
+        7,
+        2,
+        4,
+        3,
+        6
+      ],
+      "membership": [
+        0,
+        0,
+        1,
+        2,
+        1,
+        0,
+        2,
+        0
+      ],
+      "trace": {
+        "initialObjective": 257.5,
+        "bestObjective": 257.5,
+        "initializationAttempts": 4,
+        "offspringInGeneration": 0
+      },
+      "iterations": 4,
+      "evaluations": 12,
+      "status": "completed",
+      "stopReason": "generation-budget",
+      "metrics": {
+        "alpha": 1,
+        "totalWeight": 41.25,
+        "internalWeight": 15.875,
+        "externalWeight": 25.375,
+        "externalRatio": 0.6151515151515151,
+        "coordinationCost": 257.5,
+        "clusterCount": 3,
+        "minClusterSize": 2,
+        "maxClusterSize": 4,
+        "meanClusterSize": 2.6666666666666665
+      }
+    }
+  },
+  {
+    "id": "mcl-exclusive-v1",
+    "seed": 0,
+    "result": {
+      "order": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "membership": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "trace": {
+        "stableSteps": 1,
+        "maxDifference": 9.158522286112358e-7,
+        "columnSumMaxError": 0
+      },
+      "iterations": 10,
+      "evaluations": 10,
+      "status": "limit-reached",
+      "stopReason": "iteration-limit",
+      "metrics": {
+        "alpha": 1,
+        "totalWeight": 41.25,
+        "internalWeight": 41.25,
+        "externalWeight": 0,
+        "externalRatio": 0,
+        "coordinationCost": 330,
+        "clusterCount": 1,
+        "minClusterSize": 8,
+        "maxClusterSize": 8,
+        "meanClusterSize": 8
+      }
+    }
+  },
+  {
+    "id": "mcl-exclusive-v1",
+    "seed": 42,
+    "result": {
+      "order": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "membership": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "trace": {
+        "stableSteps": 1,
+        "maxDifference": 9.158522286112358e-7,
+        "columnSumMaxError": 0
+      },
+      "iterations": 10,
+      "evaluations": 10,
+      "status": "limit-reached",
+      "stopReason": "iteration-limit",
+      "metrics": {
+        "alpha": 1,
+        "totalWeight": 41.25,
+        "internalWeight": 41.25,
+        "externalWeight": 0,
+        "externalRatio": 0,
+        "coordinationCost": 330,
+        "clusterCount": 1,
+        "minClusterSize": 8,
+        "maxClusterSize": 8,
+        "meanClusterSize": 8
+      }
+    }
+  }
+]

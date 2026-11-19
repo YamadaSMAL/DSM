@@ -1,52 +1,53 @@
 import { test, expect, type Page } from '@playwright/test';
+import { reveal } from './tabs';
 import fs from 'node:fs';
 const source = async (page: Page, text: string) => {
-  await page.goto('/'); await page.getByLabel('入力ファイル',{exact:true}).setInputFiles({name:'analysis.csv',mimeType:'text/csv',buffer:Buffer.from(text)});
-  await page.getByRole('button',{name:'検証してプレビュー',exact:true}).click(); await page.getByRole('button',{name:'このデータを確定',exact:true}).click();
+  await page.goto('/'); await reveal(page.getByLabel('入力ファイル',{exact:true}));await page.getByLabel('入力ファイル',{exact:true}).setInputFiles({name:'analysis.csv',mimeType:'text/csv',buffer:Buffer.from(text)});
+  await reveal(page.getByRole('button',{includeHidden:true,name:'検証してプレビュー',exact:true}));await page.getByRole('button',{name:'検証してプレビュー',exact:true}).click(); await reveal(page.getByRole('button',{includeHidden:true,name:'このデータを確定',exact:true}));await page.getByRole('button',{name:'このデータを確定',exact:true}).click();
 };
-const run = async (page: Page) => { await page.getByRole('button',{name:'解析を実行',exact:true}).click(); await expect(page.getByTestId('analysis-status')).toContainText('completed'); };
+const run = async (page: Page) => { await reveal(page.getByRole('button',{includeHidden:true,name:'解析を実行',exact:true}));await page.getByRole('button',{name:'解析を実行',exact:true}).click(); await expect(page.getByTestId('analysis-status')).toContainText('completed'); };
 const modules=',A,B,C,D\nA,0,1,0,0\nB,1,0,0,0\nC,0,0,0,1\nD,0,0,1,0';
 test('構造: kの再利用、基準比較、条件差、所属と対称表示を確認する',async({page})=>{
   const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
   await source(page,modules); await run(page);
   const info=page.getByRole('region',{name:'選択結果の情報'});
-  await expect(info.getByText('新規計算',{exact:false})).toBeVisible(); await expect(info.locator('.metric-grid').getByText('4',{exact:true})).toBeVisible();
+  await reveal(info.getByText('新規計算',{exact:false}));await expect(info.getByText('新規計算',{exact:false})).toBeVisible(); await reveal(info.locator('.metric-grid').getByText('4',{exact:true}));await expect(info.locator('.metric-grid').getByText('4',{exact:true})).toBeVisible();
   const resultPane=page.getByRole('region',{name:'結果DSM · 現在のビュー'}); await expect(resultPane.getByTestId('cell-detail')).toContainText('構造クラスタ');
-  await resultPane.getByRole('grid').focus(); await resultPane.getByRole('grid').press('ArrowRight'); await expect(resultPane.getByTestId('cell-detail')).toContainText('構造用の無向mean重み');
-  await page.getByRole('region',{name:'元DSM · 入力順'}).getByLabel('対数配色',{exact:true}).check(); await expect(resultPane.getByLabel('対数配色',{exact:true})).toBeChecked();
-  await page.getByLabel('クラスタ数 k',{exact:true}).fill('1');await run(page);await expect(info).toContainText('併合履歴を再利用');
-  await page.getByLabel('解析手法',{exact:true}).selectOption('baseline-single-v1');await run(page);
+  await reveal(resultPane.getByRole('grid',{includeHidden:true}));await resultPane.getByRole('grid').focus(); await reveal(resultPane.getByRole('grid',{includeHidden:true}));await resultPane.getByRole('grid').press('ArrowRight'); await expect(resultPane.getByTestId('cell-detail')).toContainText('構造用の無向mean重み');
+  await reveal(page.getByRole('region',{includeHidden:true,name:'元DSM · 入力順'}).getByLabel('対数配色',{exact:true}));await page.getByRole('region',{name:'元DSM · 入力順'}).getByLabel('対数配色',{exact:true}).check(); await expect(resultPane.getByLabel('対数配色',{exact:true})).toBeChecked();
+  await reveal(page.getByLabel('クラスタ数 k',{exact:true}));await page.getByLabel('クラスタ数 k',{exact:true}).fill('1');await run(page);await expect(info).toContainText('併合履歴を再利用');
+  await reveal(page.getByLabel('解析手法',{exact:true}));await page.getByLabel('解析手法',{exact:true}).selectOption('baseline-single-v1');await run(page);
   await expect(page.getByRole('table',{name:'解析結果一覧'}).locator('tbody tr')).toHaveCount(3);
-  await page.getByLabel('調整コストのα',{exact:true}).fill('2');await expect(info).toContainText('設定が変更されています');await run(page);
+  await reveal(page.getByLabel('調整コストのα',{exact:true}));await page.getByLabel('調整コストのα',{exact:true}).fill('2');await reveal(page.getByRole('region',{includeHidden:true,name:'選択結果の情報'}));await expect(info).toContainText('設定が変更されています');await run(page);
   await expect(page.getByRole('table',{name:'解析結果一覧'})).toContainText('比較対象外（条件差）');
-  await page.getByLabel('結果1を選択',{exact:true}).check();await expect(info).toContainText('設定が変更されています');
+  await reveal(page.getByLabel('結果1を選択',{exact:true}));await page.getByLabel('結果1を選択',{exact:true}).check();await reveal(page.getByRole('region',{includeHidden:true,name:'選択結果の情報'}));await expect(info).toContainText('設定が変更されています');
   await page.screenshot({path:'test-results/M2-structure.png',fullPage:true});
   expect(errors).toEqual([]);
 });
 test('工程: 先行順・手動上下とドラッグ・undo/redo・原指標保持を確認する',async({page})=>{
-  await source(page,',C,B,A\nC,0,1,0\nB,0,0,1\nA,0,0,0');await page.getByLabel('工程 · タスクの依存と順序',{exact:true}).check();await run(page);
+  await source(page,',C,B,A\nC,0,1,0\nB,0,0,1\nA,0,0,0');await reveal(page.getByLabel('工程 · タスクの依存と順序',{exact:true}));await page.getByLabel('工程 · タスクの依存と順序',{exact:true}).check();await run(page);
   await expect(page.getByTestId('view-order')).toHaveText('現在の表示順: A → B → C');
-  await page.getByText('表示順を手動で変更（行・列を同時に移動）',{exact:true}).click();
-  await page.getByRole('button',{name:'順序 A e000003',exact:true}).focus();await page.getByRole('button',{name:'順序 A e000003',exact:true}).press('ArrowDown');
+  await reveal(page.getByText('表示順を手動で変更（行・列を同時に移動）',{exact:true}));await page.getByText('表示順を手動で変更（行・列を同時に移動）',{exact:true}).click();
+  await reveal(page.getByRole('button',{includeHidden:true,name:'順序 A e000003',exact:true}));await page.getByRole('button',{name:'順序 A e000003',exact:true}).focus();await reveal(page.getByRole('button',{includeHidden:true,name:'順序 A e000003',exact:true}));await page.getByRole('button',{name:'順序 A e000003',exact:true}).press('ArrowDown');
   await expect(page.getByTestId('view-order')).toHaveText('現在の表示順: B → A → C');
   await expect(page.getByLabel('現在のビュー指標')).toContainText('フィードバック重み 1');await expect(page.getByLabel('現在のビュー指標')).toContainText('元のBandと順序保証を適用しません');
   const metrics=page.getByLabel('解析結果の指標');await expect(metrics.locator('[data-metric=feedbackWeight] strong')).toHaveText('0');
-  await page.getByRole('button',{name:'undo',exact:true}).click();await expect(page.getByTestId('view-order')).toHaveText('現在の表示順: A → B → C');
-  await page.getByRole('button',{name:'redo',exact:true}).click();await expect(page.getByTestId('view-order')).toHaveText('現在の表示順: B → A → C');
-  await page.getByRole('button',{name:'解析順へ戻す',exact:true}).click();
-  await page.getByRole('button',{name:'順序 C e000001',exact:true}).dragTo(page.getByRole('button',{name:'順序 A e000003',exact:true}));await expect(page.getByTestId('view-order')).toHaveText('現在の表示順: C → A → B');
-  await page.getByRole('button',{name:'元順へ戻す',exact:true}).click();await expect(page.getByTestId('view-order')).toHaveText('現在の表示順: C → B → A');
+  await reveal(page.getByRole('button',{includeHidden:true,name:'undo',exact:true}));await page.getByRole('button',{name:'undo',exact:true}).click();await expect(page.getByTestId('view-order')).toHaveText('現在の表示順: A → B → C');
+  await reveal(page.getByRole('button',{includeHidden:true,name:'redo',exact:true}));await page.getByRole('button',{name:'redo',exact:true}).click();await expect(page.getByTestId('view-order')).toHaveText('現在の表示順: B → A → C');
+  await reveal(page.getByRole('button',{includeHidden:true,name:'解析順へ戻す',exact:true}));await page.getByRole('button',{name:'解析順へ戻す',exact:true}).click();
+  await reveal(page.getByRole('button',{includeHidden:true,name:'順序 C e000001',exact:true}));await page.getByRole('button',{name:'順序 C e000001',exact:true}).dragTo(page.getByRole('button',{name:'順序 A e000003',exact:true}));await expect(page.getByTestId('view-order')).toHaveText('現在の表示順: C → A → B');
+  await reveal(page.getByRole('button',{includeHidden:true,name:'元順へ戻す',exact:true}));await page.getByRole('button',{name:'元順へ戻す',exact:true}).click();await expect(page.getByTestId('view-order')).toHaveText('現在の表示順: C → B → A');
   await page.screenshot({path:'test-results/M2-process.png',fullPage:true});
-  await page.getByLabel('解析手法',{exact:true}).selectOption('baseline-identity-v1');await run(page);await expect(page.getByLabel('解析結果の指標').locator('[data-metric=feedbackWeight] strong')).toHaveText('2');
-  await page.getByLabel('実行する解析閾値',{exact:true}).fill('1');await expect(page.getByRole('region',{name:'選択結果の情報'})).toContainText('設定が変更されています');
+  await reveal(page.getByLabel('解析手法',{exact:true}));await page.getByLabel('解析手法',{exact:true}).selectOption('baseline-identity-v1');await run(page);await expect(page.getByLabel('解析結果の指標').locator('[data-metric=feedbackWeight] strong')).toHaveText('2');
+  await reveal(page.getByLabel('実行する解析閾値',{exact:true}));await page.getByLabel('実行する解析閾値',{exact:true}).fill('1');await reveal(page.getByRole('region',{includeHidden:true,name:'選択結果の情報'}));await expect(page.getByRole('region',{name:'選択結果の情報'})).toContainText('設定が変更されています');
 });
 test('計算Workerの取消・再実行と入力差替えで状態を混在させない',async({page})=>{
   await source(page,modules);await run(page);
   // Hold only messages in the page-facing Worker transport, then cancel for deterministic race coverage.
   await page.evaluate(()=>{ const original=Worker.prototype.postMessage; Worker.prototype.postMessage=function(message: unknown, options?: Transferable[] | StructuredSerializeOptions) { if ((message as {type?:string}).type==='run') return; original.call(this,message,Array.isArray(options)?{transfer:options}:options); }; });
   // Current retained worker still works. Replace input to start a fresh workspace/worker.
-  await page.getByRole('button',{name:'サンプル A → B → C',exact:true}).click();await page.getByRole('button',{name:'検証してプレビュー',exact:true}).click();await page.getByRole('button',{name:'このデータを確定',exact:true}).click();
-  await page.getByRole('button',{name:'解析を実行',exact:true}).click();await page.getByRole('button',{name:'解析を取消',exact:true}).click();await expect(page.getByTestId('analysis-status')).toContainText('cancelled');
+  await reveal(page.getByRole('button',{includeHidden:true,name:'サンプル A → B → C',exact:true}));await page.getByRole('button',{name:'サンプル A → B → C',exact:true}).click();await reveal(page.getByRole('button',{includeHidden:true,name:'検証してプレビュー',exact:true}));await page.getByRole('button',{name:'検証してプレビュー',exact:true}).click();await reveal(page.getByRole('button',{includeHidden:true,name:'このデータを確定',exact:true}));await page.getByRole('button',{name:'このデータを確定',exact:true}).click();
+  await reveal(page.getByRole('button',{includeHidden:true,name:'解析を実行',exact:true}));await page.getByRole('button',{name:'解析を実行',exact:true}).click();await reveal(page.getByRole('button',{includeHidden:true,name:'解析を取消',exact:true}));await page.getByRole('button',{name:'解析を取消',exact:true}).click();await expect(page.getByTestId('analysis-status')).toContainText('cancelled');
   await expect(page.getByRole('table',{name:'解析結果一覧'})).toHaveCount(0);
   await page.reload();await source(page,modules);await run(page);await expect(page.getByRole('table',{name:'解析結果一覧'}).locator('tbody tr')).toHaveCount(1);
 });

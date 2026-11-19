@@ -6,3 +6,6 @@ coverage/
 
 test-results/
 playwright-report/
+
+# Local cleanup archive; never ship or commit generated/private artifacts.
+trash/

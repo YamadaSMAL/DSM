@@ -63,3 +63,12 @@ it('HTMLは自己完結で、埋込JSON・静的文字列を安全に直列化�
   const html=htmlExport(await prepareExport(s));expect(html).toContain('\\u003c/script>');expect(html).toContain('&lt;img');expect(html).not.toContain('<img src=x');expect(html).not.toMatch(/<script[^>]+src=/);expect(html).toContain('connect-src \'none\'');expect(html).toContain('<noscript>');expect(html.match(/<canvas /g)).toHaveLength(2);
 });
 it('日時とタイムゾーンを使い安全な既定名を作る',()=>{expect(outputFilename('../日本語 <x>.csv','html',meta)).toBe('dsm____日本語__x__20261116-090102.html');});
+it.each(['igta-plus-paper-informed-v1','igta-pp-gigta-paper-informed-v1'])('%s exports validated diagnostic points in HTML and the existing nine XLSX sheets',async id=>{
+  const s=await sampleSession(),run=await runAnalysis(s.input,id,{seed:0,clusterSlots:2,populationSize:4,generations:2,maxProposals:100},s.settings.options,'run-1');
+  s.runs=[run];s.views={'run-1':initialView(run.order)};s.settings={...s.settings,algorithmId:id,parameters:run.parameters,seed:0};
+  const prepared=await prepareExport(s),html=htmlExport(prepared),book=read(xlsxExport(prepared),{type:'array'}),{utils}=await import('xlsx');
+  expect(html).toContain('aria-label="探索経過グラフ"');expect(html).toContain('クラスタ規模分布');expect(html).toContain('<td>'+run.history!.points.at(-1)!.value+'</td>');expect(book.SheetNames).toHaveLength(9);
+  const metrics=utils.sheet_to_json(book.Sheets['Metrics']!,{header:1}) as unknown[][],header=metrics.findIndex(row=>row[0]==='反復数'&&row[1]==='評価回数');expect(header).toBeGreaterThan(0);
+  expect(metrics.slice(header+1)).toEqual(run.history!.points.map(p=>[p.iteration,p.evaluations,p.value,p.best]));
+  const config=utils.sheet_to_json(book.Sheets['RunConfig']!,{header:1}) as unknown[][];expect(JSON.parse(config.find(row=>row[0]==='history')![1] as string)).toEqual(run.history);
+});

@@ -25,7 +25,8 @@ scope.onmessage = async ({ data }) => {
     scope.postMessage({ runId, dataRevision, status: 'completed', result });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    const status = message === 'cancelled' || message === 'limit-reached' ? message : 'failed';
+    // 一部の手法は初期化中の時間切れを shouldStop() の値 'time-limit' のまま送出するため、上限到達として扱う。
+    const status = message === 'cancelled' ? message : message === 'limit-reached' || message === 'time-limit' ? 'limit-reached' : 'failed';
     scope.postMessage({ runId, dataRevision, status, error: status === 'cancelled' ? '解析を取り消しました。' : status === 'limit-reached' ? '30秒の上限に達しました。完了結果は保持しています。' : message });
   }
 };

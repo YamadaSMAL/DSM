@@ -59,7 +59,8 @@ function metadata(value: unknown): ArtifactMetadata {
   return result;
 }
 /** Rebuild from the source cells and rerun registered deterministic algorithms before accepting a session. */
-export async function validateSession(value: unknown): Promise<SessionData> {
+/** onProgress は各結果の再計算後に呼ばれる。入出力Workerはこれを生存信号として使い、全体時間ではなく停滞時間で打ち切る。 */
+export async function validateSession(value: unknown, onProgress?: (done: number, total: number) => void): Promise<SessionData> {
   safeTree(value); const raw = obj(value);
   if (raw['schemaVersion'] !== 1 || raw['kind'] !== 'dsm-session') fail('未知のスキーマです。');
   const m = obj(raw['input']), n = integer(m['n'],1,500), revision = integer(m['revision'],1,Number.MAX_SAFE_INTEGER);
@@ -82,7 +83,9 @@ export async function validateSession(value: unknown): Promise<SessionData> {
   equal(p['transformations'],rebuilt.matrix.provenance.transformations,'取込変換履歴');
   if (p['sheet']!==rebuilt.matrix.provenance.sheet || p['range']!==rebuilt.matrix.provenance.range) fail('取込範囲が一致しません。');
   const runs: RunResult[]=[], ids=new Set<string>(), cache=new Map();
-  for (const value of array(raw['runs'],100)) {
+  const savedRuns=array(raw['runs'],100);
+  onProgress?.(0,savedRuns.length);
+  for (const value of savedRuns) {
     const r=obj(value), runId=string(r['runId'],100);
     if (!/^[a-zA-Z0-9_-]+$/.test(runId) || ids.has(runId)) fail('結果IDが重複または不正です。'); ids.add(runId);
     permutation(r['order'],n);
@@ -102,6 +105,7 @@ export async function validateSession(value: unknown): Promise<SessionData> {
     if(condition.parameters.maxEvaluations!==undefined&&evaluations>condition.parameters.maxEvaluations)fail('評価上限を超えています。');
     const fresh=await runAnalysis(input,algorithmId,{...condition.parameters,...(plugin.capabilities.seeded?{seed:r['seed'] as number}:{})},condition.options,runId,context,cache);
 
+    if(r['history']!==undefined)equal(r['history'],fresh.history,'history');else delete fresh.history;
     for(const key of ['inputHash','mode','parameters','options','order','membership','sccMembership','bandByElement','scc','hierarchy','preprocessing','metricVersions','warnings','stopReason','status','seed','prngVersion','converged','initialState','trace','tearing','objective'] as const) equal(r[key],fresh[key],key);
     const actualMetrics=obj(r['metrics']);
     if (Object.keys(actualMetrics).length!==Object.keys(fresh.metrics).length) fail('指標の件数が不正です。');
@@ -109,6 +113,7 @@ export async function validateSession(value: unknown): Promise<SessionData> {
     if(algorithmId.startsWith('sa-')||algorithmId==='mcl-exclusive-v1'||algorithmId==='ga-cluster-v1'||algorithmId==='tearing-greedy-v1'||isIgtaProfile(algorithmId)){equal(iterations,fresh.iterations,'反復回数');equal(evaluations,fresh.evaluations,'評価回数');}
     let batch:RunResult['batch'];if(r['batch']!==undefined){const b=obj(r['batch']),id=string(b['id'],100),rootSeed=integer(b['rootSeed'],0,0xffffffff),count=integer(b['count'],1,100),index=integer(b['index'],0,count-1);if(!plugin.capabilities.seeded||!/^[a-zA-Z0-9_-]+$/.test(id)||deriveSeeds(rootSeed,count)[index]!==fresh.seed)fail('複数seedの情報が不正です。');if(b['seeds']!==undefined)equal(b['seeds'],deriveSeeds(rootSeed,count),'全試行seed');batch={id,rootSeed,index,count,...(b['seeds']!==undefined?{seeds:deriveSeeds(rootSeed,count)}:{})};}
     runs.push({...fresh,...(batch?{batch}:{}),elapsedMs:finite(r['elapsedMs']),iterations:integer(r['iterations'],0,Number.MAX_SAFE_INTEGER),evaluations:integer(r['evaluations'],0,Number.MAX_SAFE_INTEGER),stopReason:string(r['stopReason']),warnings:array(r['warnings'],100).map(v=>string(v,10000)),...(r['cacheHit']!==undefined?{cacheHit:bool(r['cacheHit'])}:{}),...(r['environment']!==undefined?{environment:metadata(r['environment'])}:{})});
+    onProgress?.(runs.length,savedRuns.length);
   }
   const batches=new Map<string,{condition:string;indices:Set<number>}>();for(const run of runs)if(run.batch){const condition=canonical([run.batch.rootSeed,run.batch.count,run.algorithm,run.parameters,run.inputHash]);const previous=batches.get(run.batch.id);if(previous&&(previous.condition!==condition||previous.indices.has(run.batch.index)))fail('複数seedの試行が重複または条件不一致です。');const state=previous??{condition,indices:new Set<number>()};state.indices.add(run.batch.index);batches.set(run.batch.id,state);}
   const views: Record<string,ViewHistory>={}, savedViews=obj(raw['views']);
@@ -123,9 +128,9 @@ export function serializeSession(session: SessionData): string {
   const text=JSON.stringify(session,(_key,value:unknown)=>value instanceof Float64Array?Array.from(value):value,2);
   if(new TextEncoder().encode(text).byteLength>SESSION_LIMIT)throw new Error('セッションJSONは64MiB以内にしてください。'); return text;
 }
-export async function parseSession(bytes: ArrayBuffer): Promise<SessionData> {
+export async function parseSession(bytes: ArrayBuffer, onProgress?: (done: number, total: number) => void): Promise<SessionData> {
   if(bytes.byteLength>SESSION_LIMIT)throw new Error('セッションJSONは64MiB以内にしてください。');
-  return validateSession(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes)) as unknown);
+  return validateSession(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes)) as unknown, onProgress);
 }
 export function rebaseSession(session: SessionData, revision: number): SessionData { return {...session,input:{...session.input,revision},runs:session.runs.map(run=>({...run,dataRevision:revision}))}; }
 export async function sessionInputHash(session: SessionData) { return analysisInputHash(session.input,session.settings.options); }

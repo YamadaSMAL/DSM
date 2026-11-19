@@ -3,26 +3,28 @@
   'use strict';
   const data=JSON.parse(document.getElementById('report-data').textContent),N=data.n,SIZE=620,MARGIN=95,AREA=SIZE-MARGIN;
   let zoom=1;
+  // セル内の数値表示。桁や指数を落とさず7文字程度に収める（例: 12345678 → 1.2e7）。
+  const cellText=v=>{const text=String(v);if(text.length<=7)return text;const a=Math.abs(v);return a!==0&&(a>=1e6||a<1e-3)?v.toExponential(1).replace('e+','e'):String(Number(v.toPrecision(5))).slice(0,7);};
   const max=data.original.reduce((a,b)=>Math.max(a,b),0);
   const panes=['original','result'].map(id=>({id,canvas:document.getElementById(id),detail:document.getElementById(id+'-detail'),order:id==='original'?Array.from({length:N},(_,i)=>i):data.order,values:id==='original'?data.original:data.result,pan:{x:0,y:0},selected:{r:0,c:0},drag:null}));
   function draw(pane,print=false){
     const {canvas,values,order}=pane,dpr=window.devicePixelRatio||1,cell=AREA/N*(print?1:zoom),pan=print?{x:0,y:0}:pane.pan;
-    canvas.width=SIZE*dpr;canvas.height=SIZE*dpr;const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);ctx.fillStyle='#fffefa';ctx.fillRect(0,0,SIZE,SIZE);
+    canvas.width=SIZE*dpr;canvas.height=SIZE*dpr;const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);ctx.fillStyle='#ffffff';ctx.fillRect(0,0,SIZE,SIZE);
     const firstR=Math.max(0,Math.floor(pan.y/cell)),lastR=Math.min(N,Math.ceil((pan.y+AREA)/cell)),firstC=Math.max(0,Math.floor(pan.x/cell)),lastC=Math.min(N,Math.ceil((pan.x+AREA)/cell));
     ctx.save();ctx.beginPath();ctx.rect(MARGIN,MARGIN,AREA,AREA);ctx.clip();
     for(let r=firstR;r<lastR;r++)for(let c=firstC;c<lastC;c++){
       const v=values[r*N+c],strength=max?(data.color.log?Math.log1p(v)/Math.log1p(max):v/max):0,x=MARGIN+c*cell-pan.x,y=MARGIN+r*cell-pan.y;
-      ctx.fillStyle=r===c?'#d9dfd6':v>0?data.color.alternative?`rgb(${240-180*strength},${235-150*strength},${250-50*strength})`:`rgb(${220-195*strength},${240-130*strength},${223-150*strength})`:'#f5f6f0';
+      ctx.fillStyle=r===c?'#e2e8f0':v>0?data.color.alternative?`rgb(${240-180*strength},${235-150*strength},${250-50*strength})`:`rgb(${219-190*strength},${234-156*strength},${254-38*strength})`:'#f1f5f9';
       const px=Math.round(x*dpr)/dpr,py=Math.round(y*dpr)/dpr,gap=cell>5?1:0;ctx.fillRect(px,py,Math.max(1/dpr,Math.round((x+cell)*dpr)/dpr-px-gap),Math.max(1/dpr,Math.round((y+cell)*dpr)/dpr-py-gap));
       const scale=SIZE/(canvas.clientWidth||SIZE);
-      if(cell/scale>=28){ctx.fillStyle=strength>.7&&v>0?'white':'#17352e';ctx.font=`${12*scale}px system-ui`;ctx.fillText(String(v).slice(0,7),x+4,y+cell/2+4);}
+      if(cell/scale>=28){ctx.fillStyle=strength>.7&&v>0?'white':'#1f2937';ctx.font=`${12*scale}px system-ui`;ctx.fillText(cellText(v),x+4,y+cell/2+4);}
     }
     if(pane.id==='result'){
-      let start=0;ctx.strokeStyle='#17352e';ctx.lineWidth=2;
-      for(let end=1;end<=N;end++)if(end===N||data.membership[order[start]]!==data.membership[order[end]]){ctx.strokeRect(MARGIN+start*cell-pan.x,MARGIN+start*cell-pan.y,(end-start)*cell,(end-start)*cell);if((end-start)*cell>24){ctx.fillStyle='#17352e';ctx.font='12px system-ui';ctx.fillText((data.kind==='structure'?'C':'S')+(data.membership[order[start]]+1),MARGIN+start*cell-pan.x+4,MARGIN+start*cell-pan.y+16);}start=end;}
+      let start=0;ctx.strokeStyle='#1f2937';ctx.lineWidth=2;
+      for(let end=1;end<=N;end++)if(end===N||data.membership[order[start]]!==data.membership[order[end]]){ctx.strokeRect(MARGIN+start*cell-pan.x,MARGIN+start*cell-pan.y,(end-start)*cell,(end-start)*cell);if((end-start)*cell>24){ctx.fillStyle='#1f2937';ctx.font='12px system-ui';ctx.fillText((data.kind==='structure'?'C':'S')+(data.membership[order[start]]+1),MARGIN+start*cell-pan.x+4,MARGIN+start*cell-pan.y+16);}start=end;}
     }
-    if(!print){ctx.strokeStyle='#b46925';ctx.lineWidth=2;ctx.strokeRect(MARGIN+pane.selected.c*cell-pan.x,MARGIN+pane.selected.r*cell-pan.y,cell,cell);}ctx.restore();
-    ctx.fillStyle='#17352e';ctx.font='11px system-ui';const step=Math.max(1,Math.ceil(18/cell));
+    if(!print){ctx.strokeStyle='#f59e0b';ctx.lineWidth=2;ctx.strokeRect(MARGIN+pane.selected.c*cell-pan.x,MARGIN+pane.selected.r*cell-pan.y,cell,cell);}ctx.restore();
+    ctx.fillStyle='#1f2937';ctx.font='11px system-ui';const step=Math.max(1,Math.ceil(18/cell));
     for(let r=firstR;r<lastR;r++)if(r%step===0)ctx.fillText(data.elements[order[r]].label.slice(0,11),3,MARGIN+r*cell-pan.y+12);
     for(let c=firstC;c<lastC;c++)if(c%step===0){ctx.save();ctx.translate(MARGIN+c*cell-pan.x+10,MARGIN-6);ctx.rotate(-Math.PI/2);ctx.fillText(data.elements[order[c]].label.slice(0,11),0,0);ctx.restore();}
     const {r,c}=pane.selected,i=order[r],j=order[c],a=data.elements[i],b=data.elements[j];

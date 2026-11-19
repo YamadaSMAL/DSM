@@ -1,8 +1,91 @@
-# 依存関係とライセンス一覧
+# 開発ガイド
+
+実装要件は [SPECIFICATION.md](SPECIFICATION.md)、IGTAの操作規則は [IGTA_ALGORITHM_SPEC.md](IGTA_ALGORITHM_SPEC.md) が正本。追加の判断は [decisions.md](decisions.md) に日付・理由・影響を記録する。現在の操作・上限は [利用ガイド](user-guide.md)、確認済み範囲は [検証記録](validation.md) を参照。
+
+[テスト](#テスト) · [配信](#配信と公開準備) · [依存関係](#dependencies)
+
+## 環境と起動
+
+確認環境はNode.js 26.13.1 / npm 11.20.0。.nvmrc、package.json、package-lock.jsonで版を管理する。
+
+```sh
+npm ci
+npm run dev
+```
+
+固定依存・取得元・ライセンスは [依存関係](development.md#dependencies)。通常アプリはHTTP(S)で起動する。ビルドは `npm run build`、ローカル確認は `npm run preview`。
+
+## コードの構成
+
+| 場所 | 責務 |
+| --- | --- |
+| `src/domain/` | 行列・方向規約・前処理・順列・共有指標・SHA-256 |
+| `src/algorithms/` | registry・検証、階層法、SCC/Band、SA、MCL、GA、IGTA、Tearing、診断 |
+| `src/io/` | CSV/XLSX取込、入力検証、セッションの再計算照合、HTML/XLSX/JSON出力 |
+| `src/workers/` | 取込／解析／出力Worker、メッセージ契約、取消・時間上限 |
+| `src/state/` | 結果ごとの非破壊ビュー、undo/redo |
+| `src/ui/` | 入力・確定、条件、結果表、Canvas、セル詳細、探索診断 |
+| `tests/fixtures/` | F01〜F10と期待値、変更前探索の固定結果 |
+| `tests/unit/`, `tests/property/` | 計算・取込・Worker・保存の単体／性質テスト |
+| `tests/e2e/` | 本番ブラウザ操作、オフラインHTML、サブパス、性能計測 |
+| `public/` | 配布用静的ファイル・第三者表記 |
+
+内部は「行が列に依存」、グラフは列→行。元A・原セルを保持し、零対角D・mean対称化Sを別に作る。既存domain関数を共用し、表示順の変更と解析時の所属を分離する。
+
+結果には入力ハッシュ、手法・指標の版、前処理・パラメータ、seed・PRNG、停止理由を保持する。JSONは同じ条件の再計算で照合する。履歴は省略可能項目で旧セッションを読み込める。新しい項目や手法を追加するときは比較条件・途中停止の再現・保存検証にも反映する。
+
+取込・解析の応答はrunId/revisionとUI世代で照合し、入力差替えや取消後に古い結果を混在させない。解析は協調yield・30秒の安全上限と終了待ち最大1秒を共用する。元データやパラメータを黙って縮小しない。IGTAの原典由来・補完・未確認事項は [照合表](algorithms/igta-conformance.md) を維持する。
+
+## テスト
+
+作業ルートで実行する。
+
+```sh
+npm run check
+npx playwright install chromium
+npm run test:e2e
+npm run test:subpath
+```
+
+`check` は型検査・Vitest・本番ビルド。E2Eは本番ビルドを配信し、Worker・出力・再読込を確認する。subpathは `/test-repo/` 配下を確認する。既存のBraveを使う例:
+
+```sh
+DSM_BROWSER_EXECUTABLE='/Applications/Brave Browser.app/Contents/MacOS/Brave Browser' npm run test:e2e
+DSM_BROWSER_EXECUTABLE='/Applications/Brave Browser.app/Contents/MacOS/Brave Browser' npm run test:subpath
+```
+
+通常E2EではIGTA／M6の長時間ベンチマークをスキップする。測定コマンド・環境・結果は [性能測定](benchmarks.md) に集約する。新しい機能検証は `docs/validation.md`、残す測定JSONは `docs/benchmarks/data/`、必要な画面記録は `docs/screenshots/` に保存する。再生成可能な出力は `test-results/` に作られ、Git管理対象外。
+
+履歴記録は乱数や評価順を変更しない。既存の固定fixtureを、仕様変更の理由なく更新しない。時間・取消による途中終了は完了した固定予算の同seed再現と区別する。
+
+## 配信と公開準備
+
+GitHubの実workflow実行・公開URLは未確認。外部公開は行っていない。`.github/workflows/validate.yml` が検証、`pages.yml` が配信を担う。
+
+1. 公開先リポジトリを決め、Settings → PagesのSourceをGitHub Actionsにする。
+2. リポジトリ変数 `DSM_BASE_PATH` を、ユーザーサイト／独自ドメインなら `/`、プロジェクトサイトなら `/repository-name/` に設定する。
+3. 公開内容を確認して `DSM_PAGES_ENABLED=true` を設定し、mainへのpushまたは手動workflowを実行する。
+4. Actionsの検証・deploy成功後、公開URLで取込・Worker・保存・オフラインHTMLを確認する。
+
+ローカルのビルド先を変える例:
+
+```sh
+DSM_BASE_PATH=/repository-name/ npm run build
+```
+
+配布対象は `dist/`。`trash/` は含まない。原論文PDF・参考ノートブックのローカルファイルは削除済みで、出典記録は `docs/algorithms/` に保持する。プロジェクトURLのパスをコードへ散在させず、base設定を使う。
+
+## 文書の更新
+
+利用手順は [user-guide.md](user-guide.md) の1冊を更新する。開発手順と依存関係は本書、検証は [validation.md](validation.md) に追記する。版ごとのガイドや案内ページを増やさない。過去の証拠は [検証履歴](validation.md#検証履歴) で現在の状態と区別し、設計判断のD番号を維持する。仕様の正本は `docs/SPECIFICATION.md` と `docs/IGTA_ALGORITHM_SPEC.md`。文書移動時は相対リンクと出典JSONのパス・SHA-256を確認する。仕様全文のfingerprintがある場合は、本文・リンク変更も記録へ反映する。
+
+<a id="dependencies"></a>
+
+## 依存関係とライセンス一覧
 
 更新: 2026-11-16。直接依存は固定指定、間接依存・取得URL・integrityはpackage-lock.jsonに記録。操作中のCDN読込はなく、本番成果物に同梱する。
 
-## 直接依存
+### 直接依存
 
 | パッケージ | 版 | 用途 | ライセンス |
 | --- | --- | --- | --- |
@@ -22,7 +105,7 @@
 | [vite](https://www.npmjs.com/package/vite/v/8.3.8) | 8.3.8 | 開発・静的ビルド | MIT |
 | [vitest](https://www.npmjs.com/package/vitest/v/5.1.0) | 5.1.0 | 単体・性質テスト | MIT |
 
-## M1の取得・選定根拠
+### M1の取得・選定根拠
 
 - CSVは [Papa Parse公式仕様](https://www.papaparse.com/docs) に沿い、動的型変換を無効化しstepで上限を確認する。
 - SheetJS CEは [公式インストール手順](https://docs.sheetjs.com/docs/getting-started/installation/frameworks/) が示す固定URL `https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz` を採用。npmレジストリの古いxlsxは使わない。
@@ -31,7 +114,10 @@
 - 展開制限は [fflate公式API・ストリーム解凍](https://github.com/101arrowz/fflate) を使用。当初0.8.2の監査で報告されたZIP64に関する問題を修正版0.8.3へ更新。最終の `npm audit` は0件。
 - Playwrightは1.56.1に固定。専用Chromium取得が停止したため既存Braveで検証した。最新版や全対象ブラウザの検証を意味しない。
 
-## lockfileに記録した全依存
+<details>
+<summary>lockfileに記録した全依存（記録時点）</summary>
+
+### lockfileに記録した全依存
 
 別OS向けoptional依存と入れ子の別版も含む。全行がこの端末に導入されたという意味ではない。
 
@@ -145,7 +231,9 @@
 | why-is-node-running | 3.2.1 | MIT |
 | xlsx | 0.20.3 | Apache-2.0 |
 
-## 配布時の通知
+</details>
+
+### 配布時の通知
 
 ブラウザ成果物に含むReact・React DOM・scheduler・Papa Parse・fflate・SheetJSのライセンス本文を `public/THIRD_PARTY_NOTICES.txt` に同梱する。その他は開発依存。依存の利用条件の記録であり、プロジェクト自体の配布ライセンスを決定するものではない。
 

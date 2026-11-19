@@ -1,3 +1,4 @@
+import { historyRecorder } from './history';
 import { assertMatrix, assertZeroDiagonal, DomainError, type DenseMatrix } from '../domain';
 import { immediateContext, type ComputeContext } from './hierarchical';
 import { normalizeMembership } from './annealing';
@@ -12,6 +13,7 @@ export async function runMcl(s:DenseMatrix,inflation=2,maxIterations=100,context
   assertMatrix(s);assertZeroDiagonal(s);if(s.n>200)throw new DomainError('MCL_LIMIT','密行列MCLの上限は200要素です。');if(!Number.isFinite(inflation)||inflation<1.2||inflation>5||!Number.isInteger(maxIterations)||maxIterations<1||maxIterations>100)throw new DomainError('MCL_PARAMETERS','inflationは1.2〜5、最大反復は1〜100が必要です。');
   const n=s.n;let max=0;for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){if(s.values[i*n+j]!==s.values[j*n+i])throw new DomainError('NOT_SYMMETRIC','MCLには対称Sが必要です。');max=Math.max(max,s.values[i*n+j]!);}
   let current=new Float64Array(n*n);for(let r=0;r<n;r++)for(let c=0;c<n;c++)current[r*n+c]=r===c?1:max?s.values[r*n+c]!/max:0;normalizeColumns(current,n);const initialState=extractExclusive(current,n);
+  const history=historyRecorder('matrixDifference','difference');
   let iterations=0,stableSteps=0,maxDifference=0,converged=n===1,stopReason='trivial',evaluations=0;
   outer:while(!converged&&iterations<maxIterations){
     if(context.replay&&iterations>=context.replay.iterations){stopReason='iteration-limit';break;}
@@ -23,8 +25,9 @@ export async function runMcl(s:DenseMatrix,inflation=2,maxIterations=100,context
     for(let i=0;i<next.length;i++)next[i]=next[i]!**inflation;
     normalizeColumns(next,n,1e-8);maxDifference=0;for(let i=0;i<next.length;i++)maxDifference=Math.max(maxDifference,Math.abs(next[i]!-current[i]!));
     stableSteps=maxDifference<1e-6?stableSteps+1:0;current=next;iterations++;evaluations=iterations;converged=stableSteps>=5;stopReason=converged?'converged':'iteration-limit';
+    history.add({iteration:iterations,evaluations,value:maxDifference});
     await context.checkpoint({iterations,evaluations,phase:'MCL inflation・収束判定'});if(context.shouldStop?.()&&!converged){stopReason=context.shouldStop()!;break;}
   }
   let columnError=0;for(let c=0;c<n;c++){let sum=0;for(let r=0;r<n;r++)sum+=current[r*n+c]!;columnError=Math.max(columnError,Math.abs(sum-1));}
-  return{...extractExclusive(current,n),transition:current,iterations,evaluations,converged,status:converged?'completed' as const:stopReason==='cancelled'?'cancelled' as const:'limit-reached' as const,stopReason,trace:{stableSteps,maxDifference,columnSumMaxError:columnError},initialState};
+  return{history:history.finish(),...extractExclusive(current,n),transition:current,iterations,evaluations,converged,status:converged?'completed' as const:stopReason==='cancelled'?'cancelled' as const:'limit-reached' as const,stopReason,trace:{stableSteps,maxDifference,columnSumMaxError:columnError},initialState};
 }
