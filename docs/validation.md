@@ -5,7 +5,7 @@
 2026-11-19、v0.4.0。Node.js 26.13.1 / npm 11.20.0、Playwright同梱Chromium 141とBrave（Chromium）で確認。M0〜M6は参照プロファイルを含め機能実装済み。
 
 - タブUI・補足説明の改修後（最新）: 型検査、16ファイル262件の単体／性質テスト、本番ビルド、e2e 27件（長時間ベンチマーク2件は既定スキップ）、サブパス1件に合格。
-- GitHub Actions（ubuntu-24.04）でValidateが合格し、GitHub Pages（https://yamadasmal.github.io/DSM/）へ配信。公開URLでサンプル取込・確定・解析が完了し、ページエラーがないことを確認。
+- GitHub Actions（ubuntu-24.04）でValidateが合格し、GitHub Pages（[https://yamadasmal.github.io/DSM/](https://yamadasmal.github.io/DSM/)）へ配信。公開URLでサンプル取込・確定・解析が完了し、ページエラーがないことを確認。
 - 以下はタブUI改修前の記録。型検査、15ファイル260件の単体／性質テスト、本番ビルドに合格。
 - 探索診断追加時に既存ブラウザ回帰26件が合格（長時間ベンチマーク2件は既定スキップ）。最終変更後に診断・IGTA・出力の関連9件、サブパス1件が合格。重複を含むため件数を足して総件数とはしない。
 - 探索履歴追加前の6手法×2seedと、所属・順序・目的・指標・カウンタ等の一致を確認。

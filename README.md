@@ -4,7 +4,7 @@ CSV/XLSXの依存行列を読み込み、構造クラスタリングと工程解
 
 ## 使う
 
-インストール不要の公開版: **https://yamadasmal.github.io/DSM/**（GitHub Pages）
+インストール不要の公開版: **[https://yamadasmal.github.io/DSM/](https://yamadasmal.github.io/DSM/)**（GitHub Pages）
 
 画面は「データ → 解析 → 結果 → 出力」のタブで進む。用語の説明は各所の「?」にマウスを重ねると表示される。データはブラウザ内だけで処理し、外部へ送信しない。
 

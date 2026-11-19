@@ -62,7 +62,7 @@ DSM_BROWSER_EXECUTABLE='/Applications/Brave Browser.app/Contents/MacOS/Brave Bro
 
 ## 配信と公開準備
 
-公開先は https://github.com/YamadaSMAL/DSM 、公開URLは https://yamadasmal.github.io/DSM/ （2026-11-19公開、MIT License）。
+公開先は [https://github.com/YamadaSMAL/DSM](https://github.com/YamadaSMAL/DSM)、公開URLは [https://yamadasmal.github.io/DSM/](https://yamadasmal.github.io/DSM/)（2026-11-19公開、MIT License）。
 
 | workflow | 起動 | 内容 |
 | --- | --- | --- |
